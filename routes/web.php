@@ -14,3 +14,19 @@ Route::get('dashboard', function () {
 })->name('dashboard');
 
 Route::get('login', Login::class)->name('login');
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('admin', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+    Route::get('seller', function () {
+        return view('seller.dashboard');
+    })->name('seller.dashboard');
+    Route::get('buyer', function () {
+        return view('buyer.dashboard');
+    })->name('buyer.dashboard');
+});
+
+Route::get('/user-profile', function () {
+    return view('user-profile');
+});
