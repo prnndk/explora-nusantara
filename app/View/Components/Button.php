@@ -16,7 +16,7 @@ class Button extends Component
      */
     public function __construct($type, $leftIcon='',$rightIcon='')
     {
-        $validTypes = ['primary','info','warning','danger','success'];
+        $validTypes = ['primary','info','warning','danger','success','outline-neutral','outline-ecstasy'];
         $this->leftIcon = $leftIcon;
         $this->rightIcon = $rightIcon;
 

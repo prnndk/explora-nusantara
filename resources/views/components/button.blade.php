@@ -2,6 +2,12 @@
     $styles = [
         'primary' =>
             'text-white transition-colors duration-200 rounded-md bg-ecstasy focus:ring-2 focus:ring-offset-2 focus:ring-ecstasy focus:shadow-outline focus:outline-none',
+        'outline-neutral' =>
+            'text-neutral-500 transition-colors duration-200 rounded-md border border-neutral-300 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200 focus:shadow-outline focus:outline-none',
+        'outline-ecstasy' =>
+            'text-ecstasy transition-colors duration-200 rounded-md border border-ecstasy focus:ring-2 focus:ring-offset-2 focus:ring-ecstasy focus:shadow-outline focus:outline-none',
+        'warning' =>
+            'text-white transition-colors duration-200 rounded-md bg-yellow-normal focus:ring-2 focus:ring-offset-2 focus:ring-yellow-normalHover focus:shadow-outline focus:outline-none',
     ];
 @endphp
 

@@ -30,3 +30,11 @@ Route::prefix('dashboard')->group(function () {
 Route::get('/user-profile', function () {
     return view('user-profile');
 });
+
+Route::get('/user-profile/{User:id}/change-password', function () {
+    return view('change-password');
+});
+
+Route::get('/table-example', function () {
+    return view('table-example');
+}); 
