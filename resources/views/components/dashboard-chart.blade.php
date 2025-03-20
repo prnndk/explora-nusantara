@@ -4,18 +4,18 @@
         data: {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [{
-                    label: 'Dataset 1',
+                    label: 'Export',
                     data: [10, 5, 30, 40, 20, 60, 70],
                     fill: false,
                     tension: 0.1,
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgb(35, 147, 145)'
                 },
                 {
-                    label: 'Dataset 2',
-                    data: [15, 25, 35, 45, 55, 65, 75],
+                    label: 'Import',
+                    data: [15, 25, 35, 45, 10, 5, 20, 15],
                     fill: false,
                     tension: 0.5,
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: 'rgb(249, 115, 22)'
                 }
             ]
         },

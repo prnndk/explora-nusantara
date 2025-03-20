@@ -1,5 +1,5 @@
 <x-layouts.dashboard webTitle="Dashboard">
-    <h1 class="text-4xl font-bold">Selamat Datang! Seller, di Explora Nusantara</h1>
+    <h1 class="text-4xl font-bold">Selamat Datang! {{ ucfirst(auth()->user()->role) }}, di Explora Nusantara</h1>
 
     <section class="flex justify-center mt-8 w-full" id="slider_banner">
         {{-- sliding image banner --}}
@@ -12,14 +12,35 @@
         <div class="flex flex-col h-full w-full col-span-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12"
                 :class="{ 'gap-12': !sidebarOpenStatus, 'gap-8': sidebarOpenStatus }">
-                <x-dashboard-statistic title="Contracts in force" heading=12 icon="heroicon-o-globe-asia-australia"
-                    color="primary" />
-                <x-dashboard-statistic title="Ongoing transactions" heading="$123.12" icon="heroicon-m-banknotes"
-                    color="secondary" />
-                <x-dashboard-statistic title="Verified Meetings" heading="9" smallNumber="11"
-                    icon="heroicon-o-chat-bubble-left-right" color="secondary" />
-                <x-dashboard-statistic title="Verified Products" heading="23" smallNumber="30"
-                    icon="heroicon-c-archive-box" color="primary" />
+                @if (auth()->user()->role == 'admin')
+                    <x-dashboard-statistic title="Unvalidated Contracts" heading=12 icon="heroicon-o-globe-asia-australia"
+                                           color="primary" />
+                    <x-dashboard-statistic title="Unvalidated transactions" heading="$123.12" icon="heroicon-m-banknotes"
+                                           color="secondary" />
+                    <x-dashboard-statistic title="Unvalidated Meetings" heading="9" smallNumber="11"
+                                           icon="heroicon-o-chat-bubble-left-right" color="secondary" />
+                    <x-dashboard-statistic title="Unvalidated Products" heading="3"
+                                           icon="heroicon-c-archive-box" color="primary" />
+                    @elseif (auth()->user()->role == 'buyer')
+                    <x-dashboard-statistic title="Contracts in force" heading=12 icon="heroicon-o-globe-asia-australia"
+                                           color="primary" />
+                    <x-dashboard-statistic title="Ongoing transactions" heading="$123.12" icon="heroicon-m-banknotes"
+                                           color="secondary" />
+                    <x-dashboard-statistic title="Verified Meetings" heading="9" smallNumber="11"
+                                           icon="heroicon-o-chat-bubble-left-right" color="secondary" />
+                    <x-dashboard-statistic title="Expired Transaction" heading="3"
+                                           icon="heroicon-m-lock-closed" color="primary" />
+                    @elseif (auth()->user()->role == 'seller')
+                    <x-dashboard-statistic title="Contracts in force" heading=12 icon="heroicon-o-globe-asia-australia"
+                                           color="primary" />
+                    <x-dashboard-statistic title="Ongoing transactions" heading="$123.12" icon="heroicon-m-banknotes"
+                                           color="secondary" />
+                    <x-dashboard-statistic title="Verified Meetings" heading="9" smallNumber="11"
+                                           icon="heroicon-o-chat-bubble-left-right" color="secondary" />
+                    <x-dashboard-statistic title="Verified Products" heading="23" smallNumber="30"
+                                           icon="heroicon-c-archive-box" color="primary" />
+                @endif
+
             </div>
             <div class="mt-8">
                 <x-dashboard-chart />

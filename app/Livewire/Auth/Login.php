@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -10,7 +11,7 @@ use Livewire\Attributes\Validate;
 
 class Login extends Component
 {
-    #[Validate('required|min:3')]
+    #[Validate('required|string|min:3')]
     public $username;
     #[Validate('required')]
     public $password;
@@ -18,8 +19,18 @@ class Login extends Component
     public function loginProcess()
     {
         $this->validate();
-        sleep(5);
+
+        $process = Auth::attempt(['username' => $this->username, 'password' => $this->password]);
+
+        if(!$process){
+            $this->dispatch('toast', message: 'Invalid Credentials', data: ['position' => 'top-right', 'type' => 'error']);
+            return;
+        }
+
+        session()->regenerate();
+
         $this->dispatch('toast', message: 'Successfully Login', data: ['position' => 'top-right', 'type' => 'success']);
+        return redirect()->intended('dashboard');
     }
 
     public function render()
