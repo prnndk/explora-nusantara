@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 #[Layout('components.layouts.main')]
 class RegisterStep extends Component
 {
-    public $current = 'auth.otp';
+    public $current = 'auth.register';
 
     protected $steps = [
         'auth.register',

@@ -9,7 +9,8 @@
 @endphp
 
 <div class="w-full max-w-lg">
-    <label for="{{ $name }}" class="block text-sm text-white tracking-wide mb-2">{{ $label }}
+    <label for="{{ $name }}"
+        class="block text-sm {{ $transparent ? 'text-white' : 'text-neutral-800' }} tracking-wide mb-2">{{ $label }}
         {!! $required ? '<span class="text-red-500">*</span>' : '' !!} </label>
     <input type="password" placeholder="{{ $placeholder }}" name="{{ $name }}" id="{{ $name }}"
         {{ $required ? 'required' : '' }}

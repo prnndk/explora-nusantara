@@ -16,7 +16,8 @@
 @endphp
 
 <div>
-    <label for="{{ $name }}" class="block text-sm text-white tracking-wide mb-2">{{ $label }}
+    <label for="{{ $name }}"
+        class="block text-sm @if ($transparent) text-white @else text-gray-500 @endif tracking-wide mb-2">{{ $label }}
         {!! $required ? '<span class="text-red-500">*</span>' : '' !!} </label>
     <input type="{{ $type }}" placeholder="{{ $placeholder }}" name="{{ $name }}" id="{{ $name }}"
         {{ $required ? 'required' : '' }}

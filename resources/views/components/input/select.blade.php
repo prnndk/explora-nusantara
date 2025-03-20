@@ -9,9 +9,10 @@
 
 @php $wireModel = $attributes->get('wire:model');@endphp
 <div>
-    <div data-model="{{ $wireModel }}" class="mt-1.5 rounded-md shadow-sm text-neutral-200">
+    <div data-model="{{ $wireModel }}"
+        class="rounded-md shadow-sm @if ($transparent) text-white @else  @endif ">
         <label for="{{ $id }}"
-            class="block mb-2 text-sm font-medium dark:text-white">{{ $label }}</label>
+            class="block text-sm @if ($transparent) text-white @else text-gray-500 @endif tracking-wide mb-2">{{ $label }}</label>
         <select {{ $attributes->whereStartsWith('wire:model') }} id="{{ $id }}" name="{{ $name }}"
             class="bg-gray-50 {{ $transparent ? 'bg-transparent' : 'bg-gray-50' }} border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
             <option>Select</option>

@@ -32,7 +32,7 @@
         <div class="w-3/4 text-white">
             <h4>We have sent code to <strong> +6212345678987 </strong>. Enter the 5-digit code that we have sent to your
                 Whatsapp.</h4>
-            <section id="otp" class="my-4 text-neutral-700 text-xl font-bold">
+            <section id="otp" class="my-4 text-neutral-700 text-xl">
                 <form action="#" x-data="otpForm()" method="POST" wire:submit.prevent="submitOtp">
                     <div class="flex justify-between" x-ref="otpInputContainer">
                         <template x-for="(input, index) in length" :key="index">
@@ -43,11 +43,11 @@
                         </template>
                     </div>
                     <input type="hidden" name="otp" x-modelable="value" wire:model="otp" />
-                    <h3 class="my-5 text-base text-white">Didn't
+                    <h6 class="my-5 text-base text-white">Didn't
                         get a code?
                         <a href="#" wire:click="requestOtpCode" class="font-bold tracking-wide">Click to
                             resend.</a>
-                    </h3>
+                    </h6>
                     <x-button type="submit" addClasses="w-full">Verify</x-button>
 
                 </form>
