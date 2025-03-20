@@ -69,16 +69,14 @@
                                                     icon="heroicon-s-shopping-cart" :isSubmenu="false"/>
                     <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Transaction'"
                                                     :active="request()->routeIs('gading')"
-                                                    icon="heroicon-s-wallet" :isSubmenu="true"/>
+                                                    icon="heroicon-s-wallet" :isSubmenu="false"/>
                     <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Trade Meeting'"
                                                     :active="request()->routeIs('gading')"
                                                     icon="heroicon-s-chat-bubble-bottom-center-text" :isSubmenu="false"/>
-                                                    icon="heroicon-o-document" :isSubmenu="false"/>
                     <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Tutorial'"
                                                     :active="request()->routeIs('tutorial')"
                                                     icon="heroicon-s-light-bulb" :isSubmenu="false"/>
                 @endif
-
             </ul>
         </nav>
 
