@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 
-#[Layout('components.layouts.main')]
+#[Layout('components.layouts.main', ['webTitle' => 'Login Page'])]
 
 class Login extends Component
 {

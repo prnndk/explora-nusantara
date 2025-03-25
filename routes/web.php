@@ -53,7 +53,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/buyer/product', function () {
         return view('buyer.product.index');
     });
+    Route::get('/buyer/product/detail', function () {
+        return view('buyer.product.detail');
+    });
+    Route::get('/buyer/product/checkout', function () {
+        return view('buyer.product.checkout');
+    });
+    Route::get('/buyer/product/checkout-success', function () {
+        return view('buyer.product.checkout-success');
+    });
 });
-
-
-
