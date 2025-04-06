@@ -17,7 +17,7 @@
             class="absolute inset-y-0 left-0 flex items-center px-3 {{ $transparent ? 'text-white' : 'text-gray-800' }} pointer-events-none text-[0.875rem]">
             +62
         </div>
-        <input type="text" id="phone-input" name="phone" {{ $required ? 'required' : '' }}
+        <input type="text" name="phone" {{ $required ? 'required' : '' }}
             {{ $attributes->merge(['class' => 'block w-full ps-12 p-2.5 text-sm border rounded-md ' . ($transparent ? $transparent_style : $normal_style) . ($errors->has($name) ? ' ' . $error_style : '')]) }}
             pattern="[0-9]{10,13}" placeholder="8123456789" inputmode="numeric" maxlength="15"
             oninput="this.value = this.value.replace(/[^0-9]/g, '');" />

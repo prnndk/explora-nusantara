@@ -30,8 +30,9 @@
             </ol>
         </section>
         <div class="w-3/4 text-white">
-            <h4>We have sent code to <strong> +6212345678987 </strong>. Enter the 5-digit code that we have sent to your
-                Whatsapp.</h4>
+            <h4>We have sent code to <strong> {{ $user->email }} </strong>. Enter the 5-digit code that we have sent to
+                your
+                e-mail address.</h4>
             <section id="otp" class="my-4 text-neutral-700 text-xl">
                 <form action="#" x-data="otpForm()" method="POST" wire:submit.prevent="submitOtp">
                     <div class="flex justify-between" x-ref="otpInputContainer">
@@ -39,7 +40,8 @@
                             <input type="tel" maxlength="1"
                                 class="otpInput border bg-white border-neutral-300 w-16 h-16 text-center rounded-md"
                                 x-on:input="handleInput($event, index)" x-on:paste="handlePaste($event)"
-                                x-on:keydown.backspace="$event.target.value || handleBackspace($event, index)" />
+                                x-on:keydown.backspace="$event.target.value || handleBackspace($event, index)"
+                                required />
                         </template>
                     </div>
                     <input type="hidden" name="otp" x-modelable="value" wire:model="otp" />
@@ -67,11 +69,9 @@
         </h1>
     </div>
 </div>
-
-
-@push('scripts')
+@script
     <script>
-        function otpForm() {
+        window.otpForm = function() {
             return {
                 length: 5,
                 value: "",
@@ -110,5 +110,11 @@
                 },
             };
         }
+        document.addEventListener('livewire:init', function() {
+            Livewire.hook('element.updated', () => {
+                Alpine.initTree(document.querySelector('[x-data="otpForm()"]'));
+            });
+
+        });
     </script>
-@endpush
+@endscript

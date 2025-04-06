@@ -22,15 +22,16 @@ class Login extends Component
 
         $process = Auth::attempt(['username' => $this->username, 'password' => $this->password]);
 
-        if(!$process){
-            $this->dispatch('toast', message: 'Invalid Credentials', data: ['position' => 'top-right', 'type' => 'error']);
+
+        if (!$process) {
+            $this->dispatch('toast', message: 'Invalid Credentials', data: ['position' => 'top-right', 'type' => 'danger']);
             return;
         }
 
         session()->regenerate();
 
         $this->dispatch('toast', message: 'Successfully Login', data: ['position' => 'top-right', 'type' => 'success']);
-        return redirect()->intended('dashboard');
+        $this->redirectRoute('dashboard');
     }
 
     public function render()

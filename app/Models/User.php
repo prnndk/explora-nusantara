@@ -3,14 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\RegisterStatus;
+use App\Enums\UserRole;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +24,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
-        'phone_number',
-        'status_registrasi',
+        'email',
+        'register_status',
         'role',
         'password',
     ];
@@ -45,6 +50,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'register_status' => RegisterStatus::class,
+            'role' => UserRole::class,
         ];
+    }
+
+    public function getUserCurrentRegisterStatus(): string
+    {
+        return $this->register_status->value;
+    }
+
+    public function getUserVerificationStatus(): bool
+    {
+        return $this->register_status !== RegisterStatus::WAITING;
+    }
+
+    public function otp(): HasMany
+    {
+        return $this->hasMany(Otp::class, 'user_id', 'id');
     }
 }

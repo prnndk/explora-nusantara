@@ -2,28 +2,57 @@
 
 namespace App\Livewire\Auth;
 
+use App\Enums\RegisterStatus;
+use App\Enums\UserRole;
+use App\Events\UserCreated;
+use App\Events\ValidateUserEmail;
+use App\Models\User;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
 class Register extends Component
 {
-    public $currentStep = 0;
-
-    public $username = '', $password = '', $phone_number = '', $password_confirmation = '', $account_type = '';
+    public $username = '', $password = '', $email = '', $password_confirmation = '', $account_type = '';
 
     public function firstStep()
     {
         $this->validate([
-            'username' => 'required|string|min:3|max:255',
+            'username' => 'required|string|min:3|max:255|alpha_dash|unique:users,username',
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()->symbols()],
             'password_confirmation' => 'required|same:password',
-            'phone_number' => 'required|numeric|digits_between:8,13',
+            'email' => 'required|email:rfc,dns,spoof|unique:users,email',
             'account_type' => 'required'
         ]);
 
-        //send the data to parent
+        DB::beginTransaction();
+        try {
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->password = Hash::make($this->password);
+            $user->role = UserRole::from($this->account_type);
+            $user->register_status = RegisterStatus::WAITING;
+            $user->save();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('toast', message: 'Error: ' . $e->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
+            return;
+        }
+        DB::commit();
 
+        event(new UserCreated($user, 'register page', request()->ip(), $user->id));
 
+        event(new ValidateUserEmail($user));
+
+        $this->dispatch('toast', message: 'Successfully Created User', data: ['position' => 'top-right', 'type' => 'success']);
+
+        //add session to track user current step
+        session()->put('register', [
+            'user_id' => $user->id,
+            'current_step' => 'otp',
+        ]);
         $this->dispatch('next');
     }
 

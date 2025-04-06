@@ -2,8 +2,8 @@
     <div class="w-full flex flex-col justify-center">
         <span class="my-4 text-white">{{ $label }}</span>
         <label
-            class="relative border-2 border-dashed border-gray-300 bg-transparent rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition-all"
-            x-data="{ isDragging: false }" x-on:dragover.prevent="isDragging = true" x-on:dragleave="isDragging = false"
+            class="relative border-2 border-dashed border-gray-300 bg-transparent rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-gray-500 transition-all"
+            x-data="{ isDragging: false, dropdownOpen: false }" x-on:dragover.prevent="isDragging = true" x-on:dragleave="isDragging = false"
             x-on:drop.prevent="
                 isDragging = false;
                 let files = $event.dataTransfer.files;
@@ -12,32 +12,51 @@
                     $refs.fileInput.dispatchEvent(new Event('change'));
                 }
             ">
+            @if (!$file && !$temp_upload)
+                <div class="flex flex-col items-center">
+                    <x-heroicon-o-document-arrow-up class="h-10 w-10" />
+                    <p class="text-neutral-300 mt-2">Letakkan file disini!</p>
+                </div>
 
-            <div class="flex flex-col items-center">
-                <x-heroicon-o-document-arrow-up class="h-10 w-10" />
-                <p class="text-neutral-300 mt-2">Letakkan file disini!</p>
-            </div>
-
-            <!-- Hidden File Input -->
-            <input type="file" class="hidden" wire:model="file" id="fileInput" x-ref="fileInput">
-
-            <!-- Button to trigger file selection -->
-            <x-button type="primary" addClasses="mt-4" x-on:click="$refs.fileInput.click()">
-                <x-heroicon-o-plus class="w-5 h-5 mx-2" /> Tambahkan File
-            </x-button>
+                <!-- Button to trigger file selection -->
+                <x-button type="button" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
+                    <x-heroicon-o-plus class="w-5 h-5 mx-2" /> Tambahkan File
+                </x-button>
+            @else
+                <div class="flex flex-col items-center mb-2">
+                    <x-heroicon-o-document-text class="h-10 w-10" />
+                    <p class="text-neutral-100 mt-2">
+                        {{ $originalFileName }}</p>
+                </div>
+                <div class="relative">
+                    <div class="flex flex-row gap-1">
+                        @if (!$hasUploaded)
+                            <x-button type="primary" addClasses="mt-4" wire:click.prevent="saveFile">
+                                <x-heroicon-o-cloud-arrow-up class="w-5 h-5 mx-2" />
+                            </x-button>
+                            <x-button type="warning" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
+                                <x-heroicon-o-pencil class="w-5 h-5 mx-2" />
+                            </x-button>
+                        @endif
+                        <x-button type="danger" addClasses="mt-4" wire:click.prevent="remove">
+                            <x-heroicon-o-trash class="w-5 h-5 mx-2" />
+                        </x-button>
+                    </div>
+                </div>
+            @endif
         </label>
+
+        <!-- Hidden file input -->
+        <input type="file" class="hidden" wire:model="file" id="fileInput" x-ref="fileInput">
 
         <!-- Loading Indicator -->
         <div wire:loading wire:target="file" class="text-white">Uploading...</div>
 
-        <p class="text-xs text-neutral-200 mt-2">Ukuran maksimal file 10 Mb dengan format .jpg, .png, .pdf</p>
-
-        @if ($file)
-            <p class="mt-2 text-green-600">File terpilih: {{ $file->getClientOriginalName() }}</p>
-        @endif
+        <p class="text-xs text-neutral-200 mt-2">Ukuran maksimal file 10 Mb dengan format .jpg, .png, .pdf Untuk dapat
+            menyimpan gambar klik pada ikon upload</p>
 
         @error('file')
-            <p class="text-red-500 mt-2 text-sm">{{ $message }}</p>
+            <p class="text-gray-300 mt-2 text-sm">{{ $message }}</p>
         @enderror
     </div>
 </div>

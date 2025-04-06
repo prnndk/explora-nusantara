@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\RegisterStatus;
+use App\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +14,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('username')->unique();
-            $table->string('phone_number',15)->unique();
+            $table->uuid('id')->primary();
+            $table->string('username')->unique()->index();
+            $table->string('email')->unique();
+            // $table->string('phone_number', 15)->unique(); // currently disabled as using email to send otp
             $table->timestamp('user_verified_at')->nullable();
-            $table->enum('status_registrasi',['konfirmasi','detail','verified'])->default('konfirmasi');
-            $table->enum('role', ['buyer', 'seller','admin'])->default('buyer');
+            $table->enum('register_status', RegisterStatus::getToArray())->default(RegisterStatus::CONFIRMED);
+            $table->enum('role', UserRole::getToArray())->default(UserRole::BUYER);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
@@ -31,7 +34,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignUuid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

@@ -1,16 +1,26 @@
 <?php
 
+use App\Events\UserCreated;
+use App\Events\ValidateUserEmail;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\RegisterStep;
+use App\Mail\SendOtp;
+use App\Models\Otp;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
-Route::get('/register', RegisterStep::class)->name('register');
+Route::middleware('guest')->group(function () {
+    Route::get('/register', RegisterStep::class)->name('register');
 
-Route::get('login', Login::class)->name('login');
+    Route::get('login', Login::class)->name('login');
+});
 
-Route::group(['middleware' => 'auth'], function () {
+
+Route::middleware(['auth', 'verify-registration'])->group(function () {
     Route::get('testing', function () {
-        return view('testing');
+        event(new ValidateUserEmail(Auth::user()));
+        // return view('testing');
     })->name('testing');
 
     Route::get('/', function () {
@@ -22,7 +32,10 @@ Route::group(['middleware' => 'auth'], function () {
     })->name('dashboard');
 
     Route::post('logout', function () {
-        auth()->logout();
+        Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
         return redirect()->route('login');
     })->name('logout');
 
