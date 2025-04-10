@@ -48,6 +48,16 @@ class RegisterStep extends Component
     {
         $currentStepIndex = array_search($this->current, $this->steps);
         $this->current = $this->steps[$currentStepIndex + 1];
+
+        if ($this->current === 'auth.register-data') {
+            $user = User::where('id', session('register.user_id'))->firstOrFail();
+            if ($user->role === UserRole::BUYER) {
+                $this->current = 'auth.register-data-buyer';
+            } else {
+                $this->current = 'auth.register-data-seller';
+            }
+            return;
+        }
     }
 
     public function render()

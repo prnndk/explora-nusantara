@@ -16,13 +16,14 @@ class FileUpload extends Component
     public $temp_upload;
     #[Modelable]
     public $file;
-    public $name, $label, $userId, $originalFileName, $hasUploaded = false, $fileModel;
+    public $name, $label, $userId, $originalFileName, $hasUploaded = false, $fileModel, $required;
 
-    public function mount($name, $label, $userId)
+    public function mount($name, $label, $userId, $required)
     {
         $this->name = $name;
         $this->label = $label;
         $this->userId = $userId;
+        $this->required = $required;
     }
 
     // function to handle temp upload

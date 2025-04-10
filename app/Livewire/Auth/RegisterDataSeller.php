@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Seller;
 use App\Enums\FileType;
 use Livewire\Component;
-use Illuminate\Support\Str;
 use App\Enums\RegisterStatus;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +60,7 @@ class RegisterDataSeller extends Component
 
             Seller::create([
                 'name' => $this->name,
+                'user_id' => $this->user->id,
                 'nik' => $this->nik,
                 'email' => $this->email,
                 'phone_number' => $this->phone_number,

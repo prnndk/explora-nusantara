@@ -23,7 +23,7 @@ class Buyer extends Model
         'company_address',
         'company_phone_number',
         'country',
-        'bank',
+        'bank_name',
         'bank_account_number',
         'legality_file_id',
         'user_id'

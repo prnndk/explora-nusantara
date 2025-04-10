@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias(['verify-registration' => EnsureRegistrationIsComplete::class]);
+        $middleware->alias([
+            'verify-registration' => EnsureRegistrationIsComplete::class,
+            'role' => \App\Http\Middleware\Role::class
+        ]);
+        // $middleware->alias(['role' => \App\Http\Middleware\Role::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

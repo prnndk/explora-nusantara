@@ -51,9 +51,9 @@
                         <x-input.text placeholder="Jl. Surabaya" label="Address" required="true" name="address"
                             transparent="true" wire:model="address" />
                         <livewire:input.file-upload name="ktp_file_id" label="Upload File Scan KTP"
-                            user_id="{{ $user_id }}" wire:model="ktp_file_id" />
+                            user_id="{{ $user_id }}" wire:model="ktp_file_id" :required="true" />
                         <livewire:input.file-upload name="photo_file_id" label="Upload File Pas Foto"
-                            user_id="{{ $user_id }}" wire:model="photo_file_id" />
+                            user_id="{{ $user_id }}" wire:model="photo_file_id" :required="true" />
                     </div>
                     <div class="w-full md:w-1/2 space-y-4 ">
                         <x-input.text placeholder="PT xxyyzz" label="Company Name" required="true" name="company_name"
@@ -70,7 +70,7 @@
                             name="bank_account_number" transparent="true" wire:model="bank_account_number" />
                         <livewire:input.file-upload name="surat_legalitas_usaha"
                             label="Upload File (Surat Legalitas Usaha)" user_id="{{ $user_id }}"
-                            wire:model="legality_file_id" />
+                            wire:model="legality_file_id" :required="true" />
                     </div>
                 </div>
             </form>

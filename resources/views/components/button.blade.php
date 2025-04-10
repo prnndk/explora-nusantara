@@ -23,7 +23,8 @@
     <button type="{{ $type ?? 'button' }}"
         {{ $attributes->merge(['class' => 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide ' . ($addClasses . ' ' . $styles[$type])]) }}
         {{ $isDisabled ? 'disabled' : '' }}>
-        <div role="status" class="mr-3" wire:loading>
+        <div role="status" class="mr-3" wire:loading
+            wire:target="{{ $attributes->get('wire:target') ?? $attributes->get('wire:target.prevent') }}">
             <svg aria-hidden="true" class="w-5 h-5 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path

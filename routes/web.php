@@ -40,15 +40,42 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
     })->name('logout');
 
     Route::prefix('dashboard')->group(function () {
-        Route::get('admin', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
-        Route::get('seller', function () {
-            return view('seller.dashboard');
-        })->name('seller.dashboard');
-        Route::get('buyer', function () {
-            return view('buyer.dashboard');
-        })->name('buyer.dashboard');
+
+
+        Route::prefix('admin')->middleware(['role:admin'])->group(function () {
+            Route::prefix('product')->group(function () {
+                Route::get('/', function () {
+                    return view('admin.product.index');
+                })->name('admin.product.index');
+            });
+        });
+        Route::prefix('seller')->middleware(['role:seller'])->group(function () {
+            Route::prefix('product')->group(function () {
+                Route::get('/', function () {
+                    return view('seller.product.index');
+                });
+                Route::get('/create', function () {
+                    return view('seller.product.create');
+                })->name('seller.product.create');
+            });
+        });
+        Route::prefix('buyer')->middleware(['role:buyer'])->group(function () {
+            Route::prefix('product')->group(function () {
+                Route::get('/', function () {
+                    return view('buyer.product.index');
+                });
+                Route::get('/detail', function () {
+                    return view('buyer.product.detail');
+                });
+                Route::get('/checkout', function () {
+                    return view('buyer.product.checkout');
+                });
+                Route::get('/checkout-success', function () {
+                    return view('buyer.product.checkout-success');
+                });
+            });
+        });
+
     });
 
     Route::get('/user-profile', function () {
@@ -61,18 +88,5 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
 
     Route::get('/table-example', function () {
         return view('table-example');
-    });
-
-    Route::get('/buyer/product', function () {
-        return view('buyer.product.index');
-    });
-    Route::get('/buyer/product/detail', function () {
-        return view('buyer.product.detail');
-    });
-    Route::get('/buyer/product/checkout', function () {
-        return view('buyer.product.checkout');
-    });
-    Route::get('/buyer/product/checkout-success', function () {
-        return view('buyer.product.checkout-success');
     });
 });

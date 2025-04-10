@@ -52,9 +52,9 @@
                         <x-input.text placeholder="Jl. Surabaya" label="Address" required="true" name="address"
                             transparent="true" wire:model="address" />
                         <livewire:input.file-upload name="ktp" label="Upload File Scan KTP" wire:model="ktp_file_id"
-                            key="ktp" user_id="{{ $user_id }}" />
+                            key="ktp" user_id="{{ $user_id }}" :required="true" />
                         <livewire:input.file-upload name="ktp" label="Upload File Pas Foto"
-                            wire:model="photo_file_id" key="photo" user_id="{{ $user_id }}" />
+                            wire:model="photo_file_id" key="photo" user_id="{{ $user_id }}" :required="true" />
                     </div>
                     <div class="w-full md:w-1/2 space-y-4 ">
                         <x-input.text placeholder="PT xxyyzz" label="Company Name" required="true" name="company_name"
@@ -78,7 +78,7 @@
                         <livewire:input.file-upload name="surat_legalitas_usaha"
                             label="Upload File (Scan Surat Rekomendasi Dinas Provinsi)"
                             wire:model="recommendation_letter_file_id" key="recommendation"
-                            user_id="{{ $user_id }}" />
+                            user_id="{{ $user_id }}" :required="true" />
                     </div>
                 </div>
             </form>
@@ -89,18 +89,18 @@
     @push('scripts')
         <script>
             document.addEventListener('alpine:init', () => {
-            Alpine.data('formValidation', () => ({
-                init() {
-                this.$watch('nik', value => {
-                    this.nik = value.replace(/\D/g, '');
-                });
-                this.$watch('bank_account_number', value => {
-                    this.bank_account_number = value.replace(/\D/g, '');
-                });
-                },
-                nik: '',
-                bank_account_number: ''
-            }));
+                Alpine.data('formValidation', () => ({
+                    init() {
+                        this.$watch('nik', value => {
+                            this.nik = value.replace(/\D/g, '');
+                        });
+                        this.$watch('bank_account_number', value => {
+                            this.bank_account_number = value.replace(/\D/g, '');
+                        });
+                    },
+                    nik: '',
+                    bank_account_number: ''
+                }));
             });
         </script>
     @endpush

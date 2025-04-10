@@ -36,6 +36,7 @@ class RegisterDataBuyer extends Component
             'email' => 'required|email|max:255|unique:buyers,email',
             'phone_number' => 'required|string|min:8|max:15|unique:buyers,phone_number',
             'address' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
             'nik' => 'required|string|min:16|max:16|unique:buyers,nik',
             'photo_file_id' => 'required',
             'ktp_file_id' => 'required',
@@ -54,7 +55,9 @@ class RegisterDataBuyer extends Component
 
             Buyer::create([
                 'name' => $this->name,
+                'user_id' => $this->user->id,
                 'nik' => $this->nik,
+                'country' => $this->country,
                 'email' => $this->email,
                 'phone_number' => $this->phone_number,
                 'address' => $this->address,
@@ -65,7 +68,7 @@ class RegisterDataBuyer extends Component
                 'company_phone_number' => $this->company_phone_number,
                 'bank_name' => $this->bank_name,
                 'bank_account_number' => $this->bank_account_number,
-                'legality_file_id' => $this->legality_file_id->id,
+                'legality_letter_file_id' => $this->legality_file_id->id,
             ]);
 
             $this->user->update([

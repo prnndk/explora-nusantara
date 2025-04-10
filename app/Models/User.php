@@ -9,6 +9,7 @@ use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -68,5 +69,10 @@ class User extends Authenticatable
     public function otp(): HasMany
     {
         return $this->hasMany(Otp::class, 'user_id', 'id');
+    }
+
+    public function seller(): HasOne
+    {
+        return $this->hasOne(Seller::class, 'user_id', 'id');
     }
 }

@@ -19,7 +19,8 @@
                 </div>
 
                 <!-- Button to trigger file selection -->
-                <x-button type="button" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
+                <x-button type="button" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()"
+                    wire:target.prevent="file">
                     <x-heroicon-o-plus class="w-5 h-5 mx-2" /> Tambahkan File
                 </x-button>
             @else
@@ -31,14 +32,15 @@
                 <div class="relative">
                     <div class="flex flex-row gap-1">
                         @if (!$hasUploaded)
-                            <x-button type="primary" addClasses="mt-4" wire:click.prevent="saveFile">
+                            <x-button type="primary" addClasses="mt-4" wire:click.prevent="saveFile"
+                                wire:target="saveFile">
                                 <x-heroicon-o-cloud-arrow-up class="w-5 h-5 mx-2" />
                             </x-button>
                             <x-button type="warning" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
                                 <x-heroicon-o-pencil class="w-5 h-5 mx-2" />
                             </x-button>
                         @endif
-                        <x-button type="danger" addClasses="mt-4" wire:click.prevent="remove">
+                        <x-button type="danger" addClasses="mt-4" wire:click.prevent="remove" wire:target="remove">
                             <x-heroicon-o-trash class="w-5 h-5 mx-2" />
                         </x-button>
                     </div>
@@ -47,7 +49,8 @@
         </label>
 
         <!-- Hidden file input -->
-        <input type="file" class="hidden" wire:model="file" id="fileInput" x-ref="fileInput">
+        <input type="file" class="hidden" wire:model="file" id="fileInput" x-ref="fileInput"
+            @if ($required) required @endif>
 
         <!-- Loading Indicator -->
         <div wire:loading wire:target="file" class="text-white">Uploading...</div>

@@ -7,14 +7,14 @@
                     label: 'Export',
                     data: [10, 5, 30, 40, 20, 60, 70],
                     fill: false,
-                    tension: 0.1,
+                    tension: 0.15,
                     borderColor: 'rgb(35, 147, 145)'
                 },
                 {
                     label: 'Import',
                     data: [15, 25, 35, 45, 10, 5, 20, 15],
                     fill: false,
-                    tension: 0.5,
+                    tension: 0.15,
                     borderColor: 'rgb(249, 115, 22)'
                 }
             ]
