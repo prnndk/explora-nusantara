@@ -7,10 +7,10 @@ use App\Enums\UserRole;
 use App\Events\UserCreated;
 use App\Events\ValidateUserEmail;
 use App\Models\User;
-use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Component;
 
 class Register extends Component
 {
@@ -35,6 +35,9 @@ class Register extends Component
             $user->role = UserRole::from($this->account_type);
             $user->register_status = RegisterStatus::WAITING;
             $user->save();
+
+            event(new ValidateUserEmail($user));
+
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('toast', message: 'Error: ' . $e->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
@@ -43,9 +46,6 @@ class Register extends Component
         DB::commit();
 
         event(new UserCreated($user, 'register page', request()->ip(), $user->id));
-
-        event(new ValidateUserEmail($user));
-
         $this->dispatch('toast', message: 'Successfully Created User', data: ['position' => 'top-right', 'type' => 'success']);
 
         //add session to track user current step

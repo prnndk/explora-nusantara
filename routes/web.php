@@ -16,7 +16,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'verify-registration'])->group(function () {
     Route::get('testing', function () {
-        event(new ValidateUserEmail(Auth::user()));
+//        event(new ValidateUserEmail(Auth::user()));
         // return view('testing');
     })->name('testing');
 
