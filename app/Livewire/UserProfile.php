@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -45,7 +46,95 @@ class UserProfile extends Component
     }
 
     public function save(){
-        $this->dispatch('toast', message: 'Feature not yet implemented', data: ['position' => 'top-center', 'type' => 'info']);
+        if ($this->user->isBuyer()) {
+
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'nik' => [
+                    'required',
+                    'string',
+                    'min:16',
+                    'max:16',
+                    Rule::unique('buyers', 'nik')->ignore($this->user->buyer->id),
+                ],
+                'phone_number' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'max:15',
+                    Rule::unique('buyers', 'phone_number')->ignore($this->user->buyer->id),
+                ],
+                'address' => 'required|string|max:255',
+                'email' => [
+                    'required',
+                    'email',
+                    'max:255',
+                    Rule::unique('buyers', 'email')->ignore($this->user->buyer->id),
+                ],
+                'bank_name' => 'required|string|max:255',
+                'bank_account_number' => [
+                    'required',
+                    'string',
+                    'max:30',
+                    Rule::unique('buyers', 'bank_account_number')->ignore($this->user->buyer->id),
+                ],
+                'country' => 'required|string|max:255',
+                'company_name' => 'required|string|max:255',
+                'company_address' => 'required|string|max:255',
+                'company_phone_number' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'max:15',
+                    Rule::unique('buyers', 'company_phone_number')->ignore($this->user->buyer->id),
+                ],
+            ]);
+
+            $this->user->buyer->update([
+                'name' => $this->name,
+                'nik' => $this->nik,
+                'phone_number' => $this->phone_number,
+                'address' => $this->address,
+                'bank_name' => $this->bank_name,
+                'bank_account_number' => $this->bank_account_number,
+                'country' => $this->country,
+                'company_name' => $this->company_name,
+                'company_address' => $this->company_address,
+                'company_phone_number' => $this->company_phone_number
+            ]);
+
+        } else {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:sellers,email,' . $this->user->seller->id,
+                'phone_number' => 'required|string|min:8|max:15|unique:sellers,phone_number,' . $this->user->seller->id,
+                'address' => 'required|string|max:255',
+                'nik' => 'required|string|min:16|max:16|unique:sellers,nik,' . $this->user->seller->id,
+                'company_name' => 'required|string|max:255',
+                'company_address' => 'required|string|max:255',
+                'company_phone_number' => 'required|string|min:8|max:15|unique:sellers,company_phone_number,' . $this->user->seller->id,
+                'npwp' => 'required|string|min:16|max:16|unique:sellers,npwp,' . $this->user->seller->id,
+                'nib' => 'required|string|min:13|max:13|unique:sellers,nib,' . $this->user->seller->id,
+                'bank_name' => 'required|string|max:255',
+                'bank_account_number' => 'required|string|max:30|unique:sellers,bank_account_number,' . $this->user->seller->id,
+            ]);
+
+            $this->user->seller->update([
+                'name' => $this->name,
+                'nik' => $this->nik,
+                'phone_number' => $this->phone_number,
+                'address' => $this->address,
+                'email' => $this->email,
+                'bank_name' => $this->bank_name,
+                'bank_account_number' => $this->bank_account_number,
+                'npwp' => $this->npwp,
+                'nib' => $this->nib,
+                'company_name' => $this->company_name,
+                'company_address' => $this->company_address,
+                'company_phone_number' => $this->company_phone_number
+            ]);
+        }
+        $this->dispatch('toast', message: 'Berhasil Mengubah Data', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
     public function render()

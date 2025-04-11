@@ -3,7 +3,6 @@
     <h6>Easily manage your account information and preferences in one intuitive and personalized place.
     </h6>
 
-    <form wire:submit.prevent="save">
         <div class="grid md:grid-cols-2 gap-4 mt-8 min-h-full">
             <div class="flex flex-col items-center gap-4">
                 @if($this->user->isAdmin())
@@ -233,8 +232,7 @@
         </div>
         <div class="flex flex-row gap-4 justify-end mt-8">
             <x-button type="outline-neutral" addClasses="px-8" button="button">Cancel</x-button>
-            <x-button type="primary" addClasses="px-8">Save</x-button>
+            <x-button type="primary" addClasses="px-8" wire:click="save">Save</x-button>
         </div>
-    </form>
 
 </div>
