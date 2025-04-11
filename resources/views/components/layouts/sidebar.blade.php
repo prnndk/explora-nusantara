@@ -32,7 +32,7 @@
         <!-- Navigation Links -->
         <nav class="mt-3">
             <ul>
-                @if(auth()->user()->role == 'admin')
+                @if(auth()->user()->role === \App\Enums\UserRole::ADMIN)
                     <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'"
                                                     :active="request()->routeIs('dashboard')"
                                                     icon="heroicon-s-home" :isSubmenu="false"/>
@@ -40,11 +40,11 @@
                                                     :active="request()->routeIs('user-profile')"
                                                     icon="heroicon-s-user" :isSubmenu="false"/>
                     <x-layouts.sidebar.item-dropdown icon="heroicon-s-clipboard-document-check" title="Validation">
-                        <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Product'"
-                                                        :active="request()->routeIs('testing')"
+                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.product.index') }}" :title="'Product'"
+                                                        :active="request()->routeIs('admin.product.*')"
                                                         icon="heroicon-s-shopping-cart" :isSubmenu="true"/>
-                        <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Transaction'"
-                                                        :active="request()->routeIs('gading')"
+                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.transaction.index') }}" :title="'Transaction'"
+                                                        :active="request()->routeIs('admin.transaction.*')"
                                                         icon="heroicon-s-wallet" :isSubmenu="true"/>
                         <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Trade Meeting'"
                                                         :active="request()->routeIs('gading')"
@@ -57,18 +57,37 @@
                     <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Tutorial'"
                                                     :active="request()->routeIs('tutorial')"
                                                     icon="heroicon-s-light-bulb" :isSubmenu="false"/>
-                @else
+                @elseif(auth()->user()->role === \App\Enums\UserRole::BUYER)
                     <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'"
                                                     :active="request()->routeIs('dashboard')"
                                                     icon="heroicon-s-home" :isSubmenu="false"/>
                     <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
                                                     :active="request()->routeIs('user-profile')"
                                                     icon="heroicon-s-user" :isSubmenu="false"/>
-                    <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Product'"
-                                                    :active="request()->routeIs('testing')"
+                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.product.index') }}" :title="'Product'"
+                                                    :active="request()->routeIs('buyer.product.*')"
                                                     icon="heroicon-s-shopping-cart" :isSubmenu="false"/>
-                    <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Transaction'"
-                                                    :active="request()->routeIs('gading')"
+                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.product.index') }}" :title="'Transaction'"
+                                                    :active="request()->routeIs('buyer.product.*')"
+                                                    icon="heroicon-s-wallet" :isSubmenu="false"/>
+                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.trade-meeting.index') }}" :title="'Trade Meeting'"
+                                                    :active="request()->routeIs('buyer.trade-meeting.index')"
+                                                    icon="heroicon-s-chat-bubble-bottom-center-text" :isSubmenu="false"/>
+                    <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Tutorial'"
+                                                    :active="request()->routeIs('tutorial')"
+                                                    icon="heroicon-s-light-bulb" :isSubmenu="false"/>
+                @elseif(auth()->user()->role === \App\Enums\UserRole::SELLER)
+                    <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'"
+                                                    :active="request()->routeIs('dashboard')"
+                                                    icon="heroicon-s-home" :isSubmenu="false"/>
+                    <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
+                                                    :active="request()->routeIs('user-profile')"
+                                                    icon="heroicon-s-user" :isSubmenu="false"/>
+                    <x-layouts.sidebar.sidebar-item route="{{ route('seller.product.index') }}" :title="'Product'"
+                                                    :active="request()->routeIs('seller.product.*')"
+                                                    icon="heroicon-s-shopping-cart" :isSubmenu="false"/>
+                    <x-layouts.sidebar.sidebar-item route="{{ route('seller.product.index') }}" :title="'Transaction'"
+                                                    :active="request()->routeIs('seller.product.*')"
                                                     icon="heroicon-s-wallet" :isSubmenu="false"/>
                     <x-layouts.sidebar.sidebar-item route="{{ route('testing') }}" :title="'Trade Meeting'"
                                                     :active="request()->routeIs('gading')"

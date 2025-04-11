@@ -21,7 +21,7 @@
                     transparent="true" wire:model="username" />
                 <x-input.password :transparent="true" label="Password" :required="true" name="password"
                     placeholder="********" wire:model="password" />
-                <x-button type="primary" addClasses="w-full" wire:click="loginProcess">
+                <x-button type="primary" addClasses="w-full" wire:click="loginProcess" wire:target="loginProcess">
                     Login
                 </x-button>
                 <div class="flex justify-center text-white text-sm">

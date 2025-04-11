@@ -26,6 +26,18 @@ class SellerProductTable extends DataTableComponent
             ->orderBy('created_at', 'desc');
     }
 
+    public function deleteProduct($id){
+        $product = Product::find($id);
+        if ($product) {
+            $product->delete();
+            $this->dispatch('refreshDataTable');
+            $this->dispatch('close-modal','confirm-delete'.$id);
+            $this->dispatch('toast', message: 'Berhasil Menghapus produk', data: ['position' => 'top-center', 'type' => 'success']);
+        }else{
+            $this->dispatch('toast', message: 'Gagal Menghapus produk', data: ['position' => 'top-center', 'type' => 'error']);
+        }
+    }
+
     public function columns(): array
     {
         return [
@@ -45,9 +57,11 @@ class SellerProductTable extends DataTableComponent
                     ])
                 )
                 ->sortable(),
-            Column::make('Actions')
-                ->label(
-                    fn($row) => view('components.table.seller-product.table-action')
+            Column::make('Actions', 'id')
+                ->format(
+                    fn($value, $row, Column $column) => view('components.table.seller-product.table-action',[
+                        'id' => $value,
+                    ])
                 ),
         ];
     }

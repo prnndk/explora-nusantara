@@ -1,20 +1,17 @@
 <x-layouts.dashboard webTitle="User Profile">
     <h1 class="text-4xl font-bold">Buyer Profile</h1>
-    <h6 class="">Easily manage your account information and preferences in one intuitive and personalized place.
+    <h6>Easily manage your account information and preferences in one intuitive and personalized place.
     </h6>
 
     <div class="grid md:grid-cols-2 gap-4 mt-8 min-h-full">
-
-        {{-- Image Profile --}}
         <div class="flex flex-col items-center gap-4">
-            <img src="https://ui-avatars.com/api/?name=export-trade-gate" alt="User"
+            <img src="https://ui-avatars.com/api/?name={{auth()->user()->username}}" alt="User"
                 class="w-48 h-48 rounded-full transition-all" />
             <span class="font-semibold text-lg flex items-center gap-2" type="primary">Buyer
                 <x-heroicon-c-pencil-square class="w-5 h-5" />
             </span>
         </div>
 
-        {{-- Tab --}}
         <div class="flex flex-col gap-4" x-data="{ tab: 'detail' }">
             <div class="flex gap-10">
                 <button @click="tab = 'detail'" class="text-lg"

@@ -19,4 +19,19 @@ class Seller extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function ktpFile(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'ktp_file_id', 'id');
+    }
+
+    public function photoFile(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'photo_file_id', 'id');
+    }
+
+    public function recommendationLetterFile(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'recommendation_letter_file_id', 'id');
+    }
+
 }

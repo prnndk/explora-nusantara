@@ -1,7 +1,7 @@
 @php
     $color = 'bg-violet-400 text-yellow-800';
 
-    switch ($status) {
+    switch ($status->value) {
         case 'approved':
             $color = 'bg-green-100 text-green-800';
             $status = 'Approved';

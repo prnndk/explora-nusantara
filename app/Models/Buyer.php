@@ -28,4 +28,22 @@ class Buyer extends Model
         'legality_file_id',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function ktpFile()
+    {
+        return $this->belongsTo(File::class, 'ktp_file_id', 'id');
+    }
+    public function photoFile()
+    {
+        return $this->belongsTo(File::class, 'photo_file_id', 'id');
+    }
+    public function legalityFile()
+    {
+        return $this->belongsTo(File::class, 'legality_file_id', 'id');
+    }
 }

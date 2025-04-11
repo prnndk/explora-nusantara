@@ -2,7 +2,7 @@
     'webTitle' => '',
 ])
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" class="font-poppins">
 
 <head>
@@ -19,23 +19,23 @@
 </head>
 
 <body class="flex flex-col items-start min-h-screen w-full p-4"
-    style="background: linear-gradient(235.71deg, rgba(35,147,145,0) 3.28%, rgba(35,147,145,0.8) 47.15%, #239391 84.53%), 
-            url('{{ asset('images/container-image.jpg') }}'); 
-           background-size: cover; 
-           background-position: center; 
-           background-repeat: no-repeat; 
+      style="background: linear-gradient(235.71deg, rgba(35,147,145,0) 3.28%, rgba(35,147,145,0.8) 47.15%, #239391 84.53%),
+            url('{{ asset('images/container-image.jpg') }}');
+           background-size: cover;
+           background-position: center;
+           background-repeat: no-repeat;
            background-attachment: fixed;">
 
-    <div class="flex px-6">
-        <x-auth-header />
-    </div>
+<div class="flex px-6">
+    <x-auth-header/>
+</div>
 
-    <section class="flex items-center justify-center h-full w-full mt-5">
-        <main class="w-full max-w-6xl">
-            {{ $slot }}
-        </main>
-    </section>
-    <livewire:toast />
+<section class="flex items-center justify-center h-full w-full mt-5">
+    <main class="w-full max-w-6xl">
+        {{ $slot }}
+    </main>
+</section>
+<livewire:toast/>
 </body>
 
 {{-- scripts --}}

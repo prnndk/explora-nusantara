@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Input;
 
-use App\Models\File;
 use App\Enums\FileType;
+use App\Models\File;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Modelable;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Modelable;
-use Illuminate\Support\Facades\Storage;
 
 class FileUpload extends Component
 {
@@ -17,13 +17,15 @@ class FileUpload extends Component
     #[Modelable]
     public $file;
     public $name, $label, $userId, $originalFileName, $hasUploaded = false, $fileModel, $required;
+    public $transparent = true;
 
-    public function mount($name, $label, $userId, $required)
+    public function mount($name, $label, $userId, $required, $transparent = true)
     {
         $this->name = $name;
         $this->label = $label;
         $this->userId = $userId;
         $this->required = $required;
+        $this->transparent = $transparent;
     }
 
     // function to handle temp upload
@@ -41,10 +43,20 @@ class FileUpload extends Component
 
         $file_path = $this->file->store('uploads', 'public');
         $fileType = $this->file->getClientMimeType();
-        if (in_array($fileType, ['image/jpeg', 'image/png'])) {
+        if (in_array($fileType, ['image/jpeg', 'image/png', 'image/jpg'])) {
             $fileType = FileType::IMAGE;
         } elseif (in_array($fileType, ['application/pdf'])) {
             $fileType = FileType::PDF;
+        } else {
+            $extension = $this->file->getClientOriginalExtension();
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                $fileType = FileType::IMAGE;
+            } elseif (in_array($extension, ['pdf'])) {
+                $fileType = FileType::PDF;
+            } else {
+                $this->dispatch('toast', message: 'File type not supported', data: ['position' => 'top-right', 'type' => 'danger']);
+                return;
+            }
         }
 
         // Save file data to database

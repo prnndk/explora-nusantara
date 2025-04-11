@@ -66,6 +66,17 @@ class User extends Authenticatable
         return $this->register_status !== RegisterStatus::WAITING;
     }
 
+    public function isBuyer(): bool{
+        return $this->role === UserRole::BUYER;
+    }
+    public function isSeller(): bool{
+        return $this->role === UserRole::SELLER;
+    }
+
+    public function isAdmin(): bool{
+        return $this->role === UserRole::ADMIN;
+    }
+
     public function otp(): HasMany
     {
         return $this->hasMany(Otp::class, 'user_id', 'id');
@@ -74,5 +85,9 @@ class User extends Authenticatable
     public function seller(): HasOne
     {
         return $this->hasOne(Seller::class, 'user_id', 'id');
+    }
+
+    public function buyer(): HasOne{
+        return $this->hasOne(Buyer::class, 'user_id', 'id');
     }
 }

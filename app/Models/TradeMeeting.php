@@ -2,11 +2,20 @@
 
 namespace App\Models;
 
+use App\Enums\ProductStatus;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TradeMeeting extends Model
 {
     /** @use HasFactory<\Database\Factories\TradeMeetingFactory> */
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $guarded = ['id'];
+
+    protected $casts = [
+        'status'=>ProductStatus::class,
+    ];
+
 }

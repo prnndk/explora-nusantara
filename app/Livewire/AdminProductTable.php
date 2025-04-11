@@ -44,9 +44,11 @@ class AdminProductTable extends DataTableComponent
                     ])
                 )
                 ->sortable(),
-            Column::make('Actions')
-                ->label(
-                    fn($row) => view('components.table.admin-product.table-action')
+            Column::make('Actions','id')
+                ->format(
+                    fn($value, $row, Column $column) => view('components.table.admin-product.table-action',[
+                        'id'=>$value,
+                    ])
                 ),
         ];
     }
