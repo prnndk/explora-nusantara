@@ -30,13 +30,13 @@ class DatabaseSeeder extends Seeder
 //            'password' => 'Seller123',
 //        ]);
 //
-//        User::factory()->create([
-//            'username' => 'admindemo',
-//            'email' => 'admin@eksplora.com',
-//            'register_status' => 'verified',
-//            'role' => 'admin',
-//            'password' => 'Admin123',
-//        ]);
+        User::factory()->create([
+            'username' => 'admindemo',
+            'email' => 'admin@eksplora.com',
+            'register_status' => 'verified',
+            'role' => 'admin',
+            'password' => 'Admin123',
+        ]);
 
         Product::factory()->count(10)->create();
 
