@@ -34,7 +34,7 @@ class SendOtp extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('no-reply@exploranusantara.com', 'Explora Nusantara'),
+            from: new Address('no-reply@gading.xyz', 'Explora Nusantara'),
             subject: 'Explora Nusantara - OTP Verification',
         );
     }
