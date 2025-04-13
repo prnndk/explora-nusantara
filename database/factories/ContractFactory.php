@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Buyer;
+use App\Models\Seller;
+use App\Enums\ProductStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +20,10 @@ class ContractFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'product_id' => \App\Models\Product::inRandomOrder()->first()->id,
+            'buyer_id' => Buyer::inRandomOrder()->first()->id,
+            'seller_id' => Seller::inRandomOrder()->first()->id,
+            'status' => fake()->randomElement(ProductStatus::getToArray()),
         ];
     }
 }

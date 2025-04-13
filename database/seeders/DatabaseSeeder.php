@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
 use App\Models\User;
+use App\Models\Product;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Contract;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        User::factory()->create([
+        //        User::factory()->create([
 //            'username' => 'buyerdemo',
 //            'email' => 'buyer@eksplora.com',
 //            'register_status' => 'verified',
@@ -30,15 +31,16 @@ class DatabaseSeeder extends Seeder
 //            'password' => 'Seller123',
 //        ]);
 //
-        User::factory()->create([
-            'username' => 'admindemo',
-            'email' => 'admin@eksplora.com',
-            'register_status' => 'verified',
-            'role' => 'admin',
-            'password' => 'Admin123',
-        ]);
+        // User::factory()->create([
+        //     'username' => 'admindemo',
+        //     'email' => 'admin@eksplora.com',
+        //     'register_status' => 'verified',
+        //     'role' => 'admin',
+        //     'password' => 'Admin123',
+        // ]);
 
         Product::factory()->count(10)->create();
+        Contract::factory()->count(10)->create();
 
     }
 }

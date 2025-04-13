@@ -16,7 +16,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'verify-registration'])->group(function () {
     Route::get('testing', function () {
-//        event(new ValidateUserEmail(Auth::user()));
+        //        event(new ValidateUserEmail(Auth::user()));
         // return view('testing');
     })->name('testing');
 
@@ -64,6 +64,16 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
                 Route::get('/', function () {
                     return view('admin.trade-meeting.index');
                 })->name('admin.trade-meeting.index');
+            });
+            Route::prefix('contract')->group(function () {
+                Route::get('/', function () {
+                    return view('admin.contract.index');
+                })->name('admin.contract.index');
+                Route::get('/{contract:id}', function (\App\Models\Contract $contract) {
+                    return view('admin.contract.detail', [
+                        'contract' => $contract
+                    ]);
+                })->name('admin.contract.detail');
             });
         });
         Route::prefix('seller')->middleware(['role:seller'])->group(function () {
@@ -140,12 +150,13 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
             });
         });
 
+        Route::get('tutorial', function () {
+            return view('tutorial');
+        })->name('tutorial');
+        Route::get('/user-profile', \App\Livewire\UserProfile::class)->name('user-profile');
 
+        Route::get('/user-profile/change-password', \App\Livewire\ChangePassword::class)->name('user-profile.change-password');
     });
-
-    Route::get('/user-profile', \App\Livewire\UserProfile::class)->name('user-profile');
-
-    Route::get('/user-profile/change-password', \App\Livewire\ChangePassword::class)->name('user-profile.change-password');
 
     Route::get('view-file/{file:id}', function (\App\Models\File $file) {
         $filePath = storage_path('app/public/' . $file->file_path);
