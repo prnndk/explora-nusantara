@@ -29,8 +29,13 @@
         <div class="flex flex-col space-y-3 gap-4">
             <div class="space-y-6 mt-3 mb-8">
                 <h6 class="my-2">Gambar Produk</h6>
-                <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
-                    class="max-w-full h-64 object-cover rounded-md shadow-md">
+                @if ($product->file)
+                    <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
+                        class="max-w-full h-64 object-cover rounded-md shadow-md">
+                @else
+                    <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image"
+                        class="max-w-full h-64 object-cover rounded-md shadow-md">
+                @endif
             </div>
         </div>
     </div>
