@@ -1,5 +1,5 @@
 <x-layouts.dashboard webTitle="Product">
 
-    <livewire:buyer.product.indexproduct/>
+    <livewire:buyer.product.index-product />
 
 </x-layouts.dashboard>

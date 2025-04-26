@@ -22,7 +22,7 @@ class ChangePassword extends Component
 
     public function back()
     {
-        return $this->redirect('/user-profile', navigate: true);
+        return $this->redirect('/dashboard/user-profile', navigate: true);
     }
 
     public function savePassword()
@@ -50,8 +50,7 @@ class ChangePassword extends Component
             $this->dispatch('toast', message: 'Successfully Updated Password', data: ['position' => 'top-right', 'type' => 'success']);
             $this->dispatch('close-modal', 'update-password');
 
-            return $this->redirect('/user-profile', navigate: true);
-
+            return $this->redirect('/dashboard/user-profile', navigate: true);
         } catch (ValidationException $exception) {
             $this->setErrorBag($exception->validator->errors());
             $this->dispatch('toast', message: 'Error: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
