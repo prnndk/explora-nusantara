@@ -22,8 +22,11 @@
 
                     <div
                         class="max-w-sm lg:max-w-md bg-white rounded-2xl shadow-md overflow-hidden min-h-[500px] flex flex-col">
-                        <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image"
-                             class="w-full h-56 object-cover">
+                        @if($product->file)
+                            <img src="/view-file/{{ $product->file->id }}" alt="Card Image" class="w-full h-56 object-cover">
+                        @else
+                            <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image" class="w-full h-56 object-cover">
+                        @endif
                         <div class="p-6 flex flex-col justify-between flex-grow">
                             <div>
                                 <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ $product->nama }}</h2>
