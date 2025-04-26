@@ -30,7 +30,7 @@ class AdminProductTable extends DataTableComponent
     {
         $product = Product::where('id', $id)->firstOrFail();
         $product->update(['status' => ProductStatus::APPROVED]);
-        $this->emit('refreshDatatable');
+        $this->dispatch('refreshDatatable');
         $this->dispatch('toast', message: 'Berhasil aprove product', data: ['position' => 'top-center', 'type' => 'success']);
     }
 
@@ -38,7 +38,7 @@ class AdminProductTable extends DataTableComponent
     {
         $product = Product::where('id', $id)->firstOrFail();
         $product->update(['status' => ProductStatus::REJECTED]);
-        $this->emit('refreshDatatable');
+        $this->dispatch('refreshDatatable');
         $this->dispatch('toast', message: 'Berhasil reject product', data: ['position' => 'top-center', 'type' => 'success']);
     }
 
