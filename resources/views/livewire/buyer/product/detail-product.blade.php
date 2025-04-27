@@ -28,7 +28,7 @@
                             class="max-w-full h-fit object-cover rounded-sm shadow-sm">
                     </div>
                 @else
-                    <img src="{{ asset('images/mountain-placeholder.png') }}" alt="Card Image"
+                    <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image"
                         class="max-w-full h-64 object-cover rounded-md shadow-md">
                 @endif
 

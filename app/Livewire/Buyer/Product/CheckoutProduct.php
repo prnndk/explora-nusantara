@@ -4,6 +4,7 @@ namespace App\Livewire\Buyer\Product;
 
 use App\Models\Product;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -39,20 +40,35 @@ class CheckoutProduct extends Component
 
     public function checkout()
     {
+        DB::beginTransaction();
         try {
             $this->validate();
+
+            if ($this->quantity > $this->product->stok) {
+                throw ValidationException::withMessages([
+                    'quantity' => 'Quantity exceeds available stock.',
+                ]);
+            }
+
             $transaction = new Transaction();
             $transaction->product_id = $this->product->id;
             $transaction->buyer_id = auth()->user()->buyer->id;
             $transaction->seller_id = $this->product->seller->id;
             $transaction->total_harga = $this->totaled;
 
+            $this->product->stok = $this->product->stok - $this->quantity;
+            $this->product->terjual += $this->quantity;
+            $this->product->save();
+
             $transaction->save();
+            DB::commit();
         } catch (ValidationException $exception) {
+            DB::rollBack();
             $this->setErrorBag($exception->validator->errors());
             $this->dispatch('toast', message: 'Error: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
             return;
         } catch (\Exception $exception) {
+            DB::rollBack();
             $this->dispatch('toast', message: 'Error: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
             return;
         }

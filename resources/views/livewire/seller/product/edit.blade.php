@@ -34,7 +34,7 @@
                         <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
                             class="max-w-full h-64 object-cover rounded-md shadow-md">
                     @else
-                        <img src="{{ asset('images/mountain-placeholder.png') }}" alt="Placeholder Image"
+                        <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Placeholder Image"
                             class="max-w-full h-64 object-cover rounded-md shadow-md">
                     @endif
                 </div>
