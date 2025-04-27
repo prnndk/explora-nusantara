@@ -33,8 +33,13 @@
 
             </div>
             <div class="bg-gray-100 rounded-xl p-4 flex gap-4">
-                <img src="/view-file/{{ $product->file->id }}" alt="Product Image"
-                    class="w-24 h-24 rounded-lg object-cover" />
+                @if ($product->file)
+                    <img src="/view-file/{{ $product->file->id }}" alt="Product Image"
+                        class="w-24 h-24 rounded-lg object-cover" />
+                @else
+                    <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Product Image"
+                        class="w-24 h-24 rounded-lg object-cover" />
+                @endif
                 <div class="flex-1">
                     <div class="flex justify-between items-start">
                         <div>
