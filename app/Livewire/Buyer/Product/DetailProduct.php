@@ -17,6 +17,6 @@ class DetailProduct extends Component
 
     public function render()
     {
-        return view('livewire..buyer.product.detail-product');
+        return view('livewire.buyer.product.detail-product');
     }
 }

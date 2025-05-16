@@ -1,10 +1,11 @@
 <div>
     <div class="flex flex-row gap-6 my-6">
         <x-button type="danger" class="py-3 px-8 rounded-lg" button="button"
-            x-on:click="$dispatch('open-modal', 'confirm-delete')">Reject
+            x-on:click="$dispatch('open-modal', 'confirm-delete')"
+            isDisabled="{{ $product->status->value === 'rejected' }}">Reject
         </x-button>
-        <x-button type="success" class="py-3 px-8 rounded-lg"
-            x-on:click="$dispatch('open-modal','confirm-action')">Accept</x-button>
+        <x-button type="success" class="py-3 px-8 rounded-lg" x-on:click="$dispatch('open-modal','confirm-action')"
+            isDisabled="{{ $product->status->value === 'approved' }}">Accept</x-button>
     </div>
     <h6 class="font-semibold text-2xl mb-6">Product Detail</h6>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-4 w-full">

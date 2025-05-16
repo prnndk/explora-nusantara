@@ -1,4 +1,6 @@
-@props(['heading', 'description', 'color' => 'primary', 'icon'])
+@props(['heading', 'description', 'color' => 'primary', 'icon', 'link' => '#'])
+
+
 
 @php
     $mainColor = 'bg-mainGreen';
@@ -20,7 +22,7 @@
         <p class="text-sm">{{ $description }}</p>
     </div>
     <div class="ml-auto">
-        <a href="">
+        <a href="{{ $link }}" wire:navigate>
             <span class="rounded-full px-4 py-1 text-white text-xs {{ $color }}">
                 See
             </span>

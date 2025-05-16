@@ -2,7 +2,7 @@
     'webTitle' => '',
 ])
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="font-poppins">
 
 <head>
@@ -10,6 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $webTitle }} | Explora Nusantara</title>
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -20,14 +25,14 @@
 </head>
 
 <body x-data="sidebarData">
-<section class="h-full w-full my-5">
-    <x-layouts.sidebar/>
-    <main :class="{ 'ml-80 px-10 max-w-5xl ': sidebarOpenStatus, 'ml-20 px-6 max-w-full': !sidebarOpenStatus }"
-          class="transition-all duration-300">
-        {{ $slot }}
-    </main>
-</section>
-<livewire:toast/>
+    <section class="h-full w-full my-5">
+        <x-layouts.sidebar />
+        <main :class="{ 'ml-80 px-10 max-w-5xl ': sidebarOpenStatus, 'ml-20 px-6 max-w-full': !sidebarOpenStatus }"
+            class="transition-all duration-300">
+            {{ $slot }}
+        </main>
+    </section>
+    <livewire:toast />
 </body>
 
 <script>

@@ -54,8 +54,7 @@ class FileUpload extends Component
             } elseif (in_array($extension, ['pdf'])) {
                 $fileType = FileType::PDF;
             } else {
-                $this->dispatch('toast', message: 'File type not supported', data: ['position' => 'top-right', 'type' => 'danger']);
-                return;
+                return $this->dispatch('toast', message: 'File type not supported', data: ['position' => 'top-right', 'type' => 'danger']);
             }
         }
 
@@ -70,7 +69,7 @@ class FileUpload extends Component
         $this->file = $file_path;
 
         $this->hasUploaded = true;
-        $this->dispatch('toast', message: 'File uploaded successfully', data: ['position' => 'top-right', 'type' => 'success']);
+        return $this->dispatch('toast', message: 'File uploaded successfully', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
     public function remove()
@@ -96,7 +95,7 @@ class FileUpload extends Component
         $this->file = null;
         $this->originalFileName = null;
 
-        $this->dispatch('toast', message: 'File removed successfully', data: ['position' => 'top-right', 'type' => 'success']);
+        return $this->dispatch('toast', message: 'File removed successfully', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
     public function render()

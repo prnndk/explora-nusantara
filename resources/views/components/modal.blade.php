@@ -1,4 +1,4 @@
-@props(['name', 'show' => false, 'maxWidth' => 'lg', 'title' => 'Modal Title'])
+@props(['name', 'show' => false, 'maxWidth' => 'lg', 'title' => 'Modal Title', 'withIcon' => true])
 
 @php
     $maxWidthClass =
@@ -31,7 +31,9 @@
                 <!-- Modal Header -->
                 <div class="flex items-center justify-between pb-2">
                     <div class="flex flex-row gap-2 items-center">
-                        <x-heroicon-o-exclamation-circle class="size-8 text-yellow-normal" />
+                        @if ($withIcon)
+                            <x-heroicon-o-exclamation-circle class="size-8 text-yellow-normal" />
+                        @endif
                         <h3 class="text-lg font-semibold">{{ $title }}</h3>
                     </div>
                     <button @click="show = false" class="text-gray-600 hover:text-gray-800">

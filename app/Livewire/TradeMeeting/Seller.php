@@ -2,7 +2,9 @@
 
 namespace App\Livewire\TradeMeeting;
 
+use App\Enums\TransactionStatus;
 use App\Models\TradeMeeting;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
@@ -11,7 +13,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
 
 class Seller extends DataTableComponent
 {
-    public $agenda, $duration, $password, $start_time, $end_time;
+    public $agenda, $duration, $password, $start_time, $end_time, $transaction_select;
     protected $model = TradeMeeting::class;
 
     public function handleCreation()
@@ -22,6 +24,7 @@ class Seller extends DataTableComponent
             'password' => 'required',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
+            'transaction_select' => 'required|exists:transactions,id',
         ]);
 
         $zoom = \Jubaer\Zoom\Facades\Zoom::createMeeting([
@@ -39,16 +42,16 @@ class Seller extends DataTableComponent
         TradeMeeting::create([
             'zoom_id' => $zoom['id'],
             'seller_id' => auth()->user()->seller->id,
-            'buyer_id' => \App\Models\Buyer::orderBy('id', 'desc')->first()->id,
+            'buyer_id' => Transaction::find($this->transaction_select)->buyer->id,
             'password' => $this->password,
             'topic' => $this->agenda,
             'start_time' => $zoom['start_time'],
             'duration' => $zoom['duration'],
         ]);
 
-        $this->dispatch('toast', message: 'Berhasil Membuat Meeting', data: ['position' => 'top-right', 'type' => 'success']);
         $this->dispatch('close-modal', 'create');
         $this->dispatch('refreshDataTable');
+        return $this->dispatch('toast', message: 'Berhasil Membuat Meeting', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
     public function builder(): Builder
@@ -61,7 +64,9 @@ class Seller extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
-        $this->setConfigurableArea('toolbar-right-start', 'components.table.seller-meeting-action');
+        $this->setConfigurableArea('toolbar-right-start', ['components.table.seller-meeting-action', [
+            'transaction' => Transaction::where('seller_id', auth()->user()->seller->id)->where('status', TransactionStatus::NEW_REQUEST)->with(['buyer'])->get(),
+        ]]);
     }
 
     public function columns(): array

@@ -15,7 +15,16 @@ class TradeMeeting extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'status'=>ProductStatus::class,
+        'status' => ProductStatus::class,
     ];
 
+    public function buyer()
+    {
+        return $this->belongsTo(Buyer::class, 'buyer_id');
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class, 'seller_id');
+    }
 }

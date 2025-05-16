@@ -20,22 +20,24 @@ class Edit extends Component
         $this->stock = $product->stok;
     }
 
-    public function approveTransaction(){
+    public function approveTransaction()
+    {
         $this->product->update([
             'status' => ProductStatus::APPROVED,
         ]);
-        $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
+        return $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
     }
 
-    public function rejectTransaction(){
+    public function rejectTransaction()
+    {
         $this->product->update([
             'status' => ProductStatus::REJECTED,
         ]);
-        $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
+        return $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
     }
 
     public function render()
     {
-        return view('livewire..admin.product.edit');
+        return view('livewire.admin.product.edit');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\ValidateUserEmail;
+use App\Http\Controllers\PageController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\RegisterStep;
 use App\Models\Product;
@@ -25,7 +26,14 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
     })->name('home');
 
     Route::get('dashboard', function () {
-        return view('dashboard');
+        // return view('dashboard');
+        if (Auth::user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } else if (Auth::user()->isSeller()) {
+            return redirect()->route('seller.dashboard');
+        } else if (Auth::user()->isBuyer()) {
+            return redirect()->route('buyer.dashboard');
+        }
     })->name('dashboard');
 
     Route::post('logout', function () {
@@ -38,6 +46,7 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::prefix('admin')->middleware(['role:admin'])->group(function () {
+            Route::get('/', [PageController::class, 'adminDashboard'])->name('admin.dashboard');
             Route::prefix('product')->group(function () {
                 Route::get('/', function () {
                     return view('admin.product.index');
@@ -77,6 +86,7 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
             });
         });
         Route::prefix('seller')->middleware(['role:seller'])->group(function () {
+            Route::get('/', [PageController::class, 'sellerDashboard'])->name('seller.dashboard');
             Route::prefix('product')->group(function () {
                 Route::get('/', function () {
                     return view('seller.product.index');
@@ -110,6 +120,7 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
             });
         });
         Route::prefix('buyer')->middleware(['role:buyer'])->group(function () {
+            Route::get('/', [PageController::class, 'buyerDashboard'])->name('buyer.dashboard');
             Route::prefix('product')->group(function () {
                 Route::get('/', function () {
                     return view('buyer.product.index');

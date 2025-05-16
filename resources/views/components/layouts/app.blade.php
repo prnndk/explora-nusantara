@@ -2,13 +2,18 @@
     'webTitle' => '',
 ])
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="font-poppins">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
     <title>{{ $webTitle }} | Explora Nusantara</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,23 +24,24 @@
 </head>
 
 <body class="flex flex-col items-start h-screen w-full p-4"
-      style="background: linear-gradient(235.71deg, rgba(35,147,145,0) 3.28%, rgba(35,147,145,0.8) 47.15%, #239391 84.53%),
+    style="background: linear-gradient(235.71deg, rgba(35,147,145,0) 3.28%, rgba(35,147,145,0.8) 47.15%, #239391 84.53%),
             url('{{ asset('images/container-image.jpg') }}');
            background-size: cover;
            background-position: center;
            background-repeat: no-repeat;
            background-attachment: fixed;">
 
-<div class="flex px-6">
-    <x-auth-header/>
-</div>
+    <div class="flex px-6">
+        <x-auth-header />
+    </div>
 
-<section class="flex items-center justify-center h-full w-full my-5">
-    <main class="w-full max-w-6xl">
-        {{ $slot }}
-    </main>
-</section>
-<livewire:toast/>
+    <section class="flex items-center justify-center h-full w-full my-5">
+        <main class="w-full max-w-6xl">
+            {{ $slot }}
+        </main>
+    </section>
+    <livewire:toast />
 
 </body>
+
 </html>

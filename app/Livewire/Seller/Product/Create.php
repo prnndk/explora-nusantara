@@ -41,20 +41,21 @@ class Create extends Component
             $product->save();
 
             DB::commit();
-            $this->dispatch('toast', message: 'Berhasil Membuat Produk', data: ['position' => 'top-right', 'type' => 'success']);
-
             $this->reset();
+
+            $this->dispatch('toast', message: 'Berhasil Membuat Produk', data: ['position' => 'top-right', 'type' => 'success']);
+            return redirect()->route('seller.product.index');
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
-            $this->dispatch('toast', message: 'File tidak dapat ditemukan', data: ['position' => 'top-right', 'type' => 'error']);
+            return $this->dispatch('toast', message: 'File tidak dapat ditemukan', data: ['position' => 'top-right', 'type' => 'error']);
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('toast' , message: 'Terjadi kesalahan saat membuat produk', data: ['position' => 'top-right', 'type' => 'error']);
+            return $this->dispatch('toast', message: 'Terjadi kesalahan saat membuat produk', data: ['position' => 'top-right', 'type' => 'error']);
         }
     }
 
     public function render()
     {
-        return view('livewire..seller.product.create');
+        return view('livewire.seller.product.create');
     }
 }

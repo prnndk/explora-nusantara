@@ -1,10 +1,17 @@
 <div>
-    <h1 class="text-4xl font-bold">Contract#{{ $contract->id }}</h1>
-    <div class="flex flex-row gap-4 mb-6 mt-4">
-        <p class="text-md">Created At
-            {{ \Carbon\Carbon::make($contract->created_at)->monthName . ', ' . \Carbon\Carbon::make($contract->created_at) }}
-        </p>
-        <x-table.product-table-badge :status="$contract->status" />
+    <div class="flex gap-2">
+        <a href="{{ route('admin.contract.index') }}" wire:navigate class="mt-1">
+            <x-heroicon-o-arrow-left-circle class="size-8" />
+        </a>
+        <div class="">
+            <h1 class="text-4xl font-bold">Contract#{{ $contract->id }}</h1>
+            <div class="flex flex-row gap-4 mb-6 mt-4">
+                <p class="text-md">Created At
+                    {{ \Carbon\Carbon::make($contract->created_at)->monthName . ', ' . \Carbon\Carbon::make($contract->created_at) }}
+                </p>
+                <x-table.product-table-badge :status="$contract->status" />
+            </div>
+        </div>
     </div>
     <div class="" x-data="{ tab: 'buyer' }">
 

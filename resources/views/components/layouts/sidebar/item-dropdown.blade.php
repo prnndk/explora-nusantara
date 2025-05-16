@@ -1,6 +1,7 @@
 @props(['icon', 'title'])
 <li x-data="{ dropdownOpen: false }" @click.away="dropdownOpen = false">
-    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center w-full px-5 py-3 hover:bg-ecstasy">
+    <button @click="dropdownOpen = !dropdownOpen; sidebarOpenStatus=true"
+        class="flex items-center w-full px-5 py-3 hover:bg-ecstasy">
         <x-dynamic-component :component="$icon" class="w-6 h-6 text-white" />
         <span class="flex-1 ml-3 text-left" :class="{ 'block': sidebarOpenStatus, 'hidden': !sidebarOpenStatus }">
             {{ $title }}

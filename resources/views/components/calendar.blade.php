@@ -136,10 +136,10 @@
                             <div class="px-0.5 mb-1 aspect-square w-full max-w-full">
                                 <div x-text="day" @click="datePickerDayClicked(day)"
                                     :class="{
-                                        'bg-neutral-200': datePickerIsToday(day) == true,
+                                        'bg-ecstasy': datePickerIsToday(day) == true,
                                         'text-gray-600 hover:bg-neutral-200': datePickerIsToday(day) == false &&
                                             datePickerIsSelectedDate(day) == false,
-                                        'bg-ecstasy-500 text-white hover:bg-opacity-75': datePickerIsSelectedDate(
+                                        'bg-gray-500 text-white hover:bg-opacity-75': datePickerIsSelectedDate(
                                             day) == true
                                     }"
                                     class="flex items-center justify-center text-sm leading-none text-center rounded-lg cursor-pointer h-9 w-9">

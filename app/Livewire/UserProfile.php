@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\File;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -15,11 +16,13 @@ class UserProfile extends Component
 
     public $name, $nik, $phone_number, $address, $email, $bank_name, $bank_account_number, $npwp, $nib, $country, $company_name, $company_address, $company_phone_number;
 
+    public $profile_picture, $user_ktp, $legality_file_buyer, $recommendation_letter_seller;
+
     public function mount()
     {
 
         $this->user = User::where('id', auth()->user()->id)->with(['seller', 'buyer'])->firstOrFail();
-        if ($this->user->isAdmin()){
+        if ($this->user->isAdmin()) {
             return;
         }
         $this->name = $this->user->seller->name ?? $this->user->buyer->name;
@@ -45,7 +48,148 @@ class UserProfile extends Component
         return $this->redirect('user-profile/change-password', navigate: true);
     }
 
-    public function save(){
+    public function updateRecommendationLetter()
+    {
+        //validate
+        $this->validate([
+            'recommendation_letter_seller' => 'required|string|exists:files,file_path',
+        ]);
+
+        $fileId = File::where('file_path', $this->recommendation_letter_seller)->firstOrFail()->id;
+
+        if ($this->user->isSeller()) {
+            $deleteFile = File::where('id', $this->user->seller->recommendation_letter_file_id)->first();
+            if ($deleteFile) {
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->seller->update([
+                'recommendation_letter_file_id' => $fileId,
+            ]);
+        } else {
+            return $this->dispatch('toast', message: 'Fitur ini belum tersedia', data: ['position' => 'top-right', 'type' => 'info']);
+        }
+
+        $this->dispatch('close-modal', 'update-recommendation-letter');
+
+        return $this->dispatch('toast', message: 'Berhasil update surat rekomendasi', data: ['position' => 'top-right', 'type' => 'info']);
+    }
+
+    public function updateLegalityFile()
+    {
+        //validate
+        $this->validate([
+            'legality_file_buyer' => 'required|string|exists:files,file_path',
+        ]);
+
+        $fileId = File::where('file_path', $this->legality_file_buyer)->firstOrFail()->id;
+
+        if ($this->user->isBuyer()) {
+            $deleteFile = File::where('id', $this->user->buyer->legality_letter_file_id)->first();
+            if ($deleteFile) {
+                //delete file from storage
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->buyer->update([
+                'legality_letter_file_id' => $fileId,
+            ]);
+        } else {
+            return $this->dispatch('toast', message: 'Fitur ini belum tersedia', data: ['position' => 'top-right', 'type' => 'info']);
+        }
+
+        $this->dispatch('close-modal', 'update-legality-file');
+
+        return $this->dispatch('toast', message: 'Berhasil update surat legalitas', data: ['position' => 'top-right', 'type' => 'info']);
+    }
+
+    public function updateKTP()
+    {
+        //validate
+        $this->validate([
+            'user_ktp' => 'required|string|exists:files,file_path',
+        ]);
+
+        $fileId = File::where('file_path', $this->user_ktp)->firstOrFail()->id;
+
+        if ($this->user->isBuyer()) {
+            $deleteFile = File::where('id', $this->user->buyer->ktp_file_id)->first();
+            if ($deleteFile) {
+                //delete file from storage
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->buyer->update([
+                'ktp_file_id' => $fileId,
+            ]);
+        } else {
+            $deleteFile = File::where('id', $this->user->seller->ktp_file_id)->first();
+            if ($deleteFile) {
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->seller->update([
+                'ktp_file_id' => $fileId,
+            ]);
+        }
+        $this->dispatch('close-modal', 'update-ktp');
+
+        return $this->dispatch('toast', message: 'Berhasil update foto KTP', data: ['position' => 'top-right', 'type' => 'info']);
+    }
+
+    public function updateProfilePicture()
+    {
+        //validate
+        $this->validate([
+            'profile_picture' => 'required|string|exists:files,file_path',
+        ]);
+
+        $fileId = File::where('file_path', $this->profile_picture)->firstOrFail()->id;
+
+        if ($this->user->isBuyer()) {
+            $deleteFile = File::where('id', $this->user->buyer->photo_file_id)->first();
+            if ($deleteFile) {
+                //delete file from storage
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->buyer->update([
+                'photo_file_id' => $fileId,
+            ]);
+        } else {
+            $deleteFile = File::where('id', $this->user->seller->photo_file_id)->first();
+            if ($deleteFile) {
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+            $this->user->seller->update([
+                'photo_file_id' => $fileId,
+            ]);
+        }
+
+        return $this->dispatch('toast', message: 'Fitur ini belum tersedia', data: ['position' => 'top-right', 'type' => 'info']);
+    }
+
+    public function save()
+    {
         if ($this->user->isBuyer()) {
 
             $this->validate([
@@ -102,7 +246,6 @@ class UserProfile extends Component
                 'company_address' => $this->company_address,
                 'company_phone_number' => $this->company_phone_number
             ]);
-
         } else {
             $this->validate([
                 'name' => 'required|string|max:255',

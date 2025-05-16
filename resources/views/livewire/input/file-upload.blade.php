@@ -1,8 +1,8 @@
 <div>
     <div class="w-full flex flex-col justify-center">
-        <span class="my-4 {{$transparent ? 'text-white': 'text-neutral-700'}}">{{ $label }}</span>
+        <span class="my-4 {{ $transparent ? 'text-white' : 'text-neutral-700' }}">{{ $label }}</span>
         <label
-            class="relative border-2 border-dashed border-gray-300 {{$transparent ? 'bg-transparent' : ''}} rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-gray-500 transition-all"
+            class="relative border-2 border-dashed  {{ $transparent ? 'bg-transparent border-gray-300' : 'border-gray-400' }} rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-gray-500 transition-all"
             x-data="{ isDragging: false, dropdownOpen: false }" x-on:dragover.prevent="isDragging = true" x-on:dragleave="isDragging = false"
             x-on:drop.prevent="
                 isDragging = false;
@@ -15,7 +15,8 @@
             @if (!$file && !$temp_upload)
                 <div class="flex flex-col items-center">
                     <x-heroicon-o-document-arrow-up class="h-10 w-10" />
-                    <p class="{{$transparent ? 'text-neutral-300': 'text-neutral-700'}} mt-2">Letakkan file disini!</p>
+                    <p class="{{ $transparent ? 'text-neutral-300' : 'text-neutral-700' }} mt-2">Letakkan file disini!
+                    </p>
                 </div>
 
                 <!-- Button to trigger file selection -->
@@ -26,7 +27,7 @@
             @else
                 <div class="flex flex-col items-center mb-2">
                     <x-heroicon-o-document-text class="h-10 w-10" />
-                    <p class="{{$transparent ? 'text-neutral-100': 'text-neutral-700'}} mt-2">
+                    <p class="{{ $transparent ? 'text-neutral-100' : 'text-neutral-700' }} mt-2">
                         {{ $originalFileName }}</p>
                 </div>
                 <div class="relative">
@@ -53,9 +54,12 @@
             @if ($required) required @endif>
 
         <!-- Loading Indicator -->
-        <div wire:loading wire:target="file" class="{{$transparent ? 'text-white': 'text-neutral-700'}}">Uploading...</div>
+        <div wire:loading wire:target="file" class="{{ $transparent ? 'text-white' : 'text-neutral-700' }}">
+            Uploading...
+        </div>
 
-        <p class="text-xs {{$transparent ? 'text-neutral-200': 'text-neutral-700'}} mt-2">Ukuran maksimal file 10 Mb dengan format .jpg, .png, .pdf Untuk dapat
+        <p class="text-xs {{ $transparent ? 'text-neutral-200' : 'text-neutral-700' }} mt-2">Ukuran maksimal file 10 Mb
+            dengan format .jpg, .png, .pdf Untuk dapat
             menyimpan gambar klik pada ikon upload</p>
 
         @error('file')

@@ -36,7 +36,8 @@
                         icon="heroicon-s-home" :isSubmenu="false" />
                     <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
                         :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
-                    <x-layouts.sidebar.item-dropdown icon="heroicon-s-clipboard-document-check" title="Validation">
+                    <x-layouts.sidebar.item-dropdown icon="heroicon-s-clipboard-document-check" title="Validation"
+                        >
                         <x-layouts.sidebar.sidebar-item route="{{ route('admin.product.index') }}" :title="'Product'"
                             :active="request()->routeIs('admin.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="true" />
                         <x-layouts.sidebar.sidebar-item route="{{ route('admin.transaction.index') }}"

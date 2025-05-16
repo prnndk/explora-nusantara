@@ -25,7 +25,7 @@ class Buyer extends Model
         'country',
         'bank_name',
         'bank_account_number',
-        'legality_file_id',
+        'legality_letter_file_id',
         'user_id'
     ];
 
@@ -44,6 +44,6 @@ class Buyer extends Model
     }
     public function legalityFile()
     {
-        return $this->belongsTo(File::class, 'legality_file_id', 'id');
+        return $this->belongsTo(File::class, 'legality_letter_file_id', 'id');
     }
 }

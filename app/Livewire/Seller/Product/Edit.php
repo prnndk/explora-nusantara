@@ -62,6 +62,6 @@ class Edit extends Component
 
     public function render()
     {
-        return view('livewire..seller.product.edit');
+        return view('livewire.seller.product.edit');
     }
 }

@@ -2,7 +2,7 @@
     'webTitle' => '',
 ])
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="font-poppins">
 
 <head>
@@ -10,6 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $webTitle }} | Explora Nusantara</title>
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -19,17 +24,17 @@
 </head>
 
 <body class="flex flex-col items-start h-screen w-full p-4">
-<div class="flex px-6">
-    <div class="flex items-center text-mainGreen md:text-xl font-bold mb-6">
-        <img src="{{ asset('images/logo.svg') }}" alt="logo" class="w-12 h-12 md:w-16 md:h-16"/>
-        <h1 class="ml-4">Explora Nusantara</h1>
+    <div class="flex px-6">
+        <div class="flex items-center text-mainGreen md:text-xl font-bold mb-6">
+            <img src="{{ asset('images/logo.svg') }}" alt="logo" class="w-12 h-12 md:w-16 md:h-16" />
+            <h1 class="ml-4">Explora Nusantara</h1>
+        </div>
     </div>
-</div>
 
-<section class="min-h-full w-full mx-3 my-5">
-    {{ $slot }}
-</section>
-<livewire:toast/>
+    <section class="min-h-full w-full mx-3 my-5">
+        {{ $slot }}
+    </section>
+    <livewire:toast />
 
 </body>
 

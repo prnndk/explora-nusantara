@@ -1,8 +1,6 @@
 <x-button type="primary" x-on:click="$dispatch('open-modal', 'create')">
-    <x-heroicon-o-plus class="w-5 h-5" />
-    Create New Meeting
+    <x-heroicon-o-plus class="w-5 h-5" /> Create New Meeting
 </x-button>
-
 
 <x-plain-modal name="create" :show="false">
     <div class="p-6">
@@ -26,6 +24,15 @@
                     wire:model="start_time" :required="true" />
                 <x-input.text label="End Time" name="end_time" type="datetime-local" :transparent="false"
                     wire:model="end_time" :required="true" />
+                <x-input.select label="Select Transaction" name="transaction_select" :transparent="false"
+                    wire:model="transaction_select" :required="true">
+                    @foreach ($transaction as $tx)
+                        <option value="{{ $tx->id }}">
+                            Transaksi {{ 'Rp ' . number_format($tx->total_harga, 0, ',', '.') . ' - ' . $tx->buyer->name }} - {{ $tx->product->nama }}
+                        </option>
+                    @endforeach
+                </x-input.select>
+
             </div>
             <div class="mt-4 flex justify-end space-x-2">
                 <button @click="$dispatch('close-modal', 'create')" button="button"
