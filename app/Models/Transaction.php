@@ -32,4 +32,9 @@ class Transaction extends Model
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
+    public function contract()
+    {
+        return $this->hasOne(Contract::class, 'transaction_id', 'id');
+    }
+
 }

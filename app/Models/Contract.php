@@ -35,4 +35,9 @@ class Contract extends Model
     {
         return $this->belongsTo(File::class, 'file_id');
     }
+
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
 }

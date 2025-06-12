@@ -109,8 +109,9 @@
                         <x-heroicon-o-document class="w-5 h-5 mr-3" />
                         @if ($contract->file_id)
                             {{ str_replace('uploads/', '', $contract->file->file_path) }}
+                        @else
+                            No Document Available
                         @endif
-                        No Document Available
                         <x-heroicon-c-ellipsis-vertical class="w-5 h-5 ml-3" />
                     </button>
 

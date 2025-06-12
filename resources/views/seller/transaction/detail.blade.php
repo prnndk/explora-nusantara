@@ -15,4 +15,8 @@
     <div class="my-10">
         <livewire:seller.transaction.detail-transaction :transaction="$transaction" />
     </div>
+
+    
+
+
 </x-layouts.dashboard>
