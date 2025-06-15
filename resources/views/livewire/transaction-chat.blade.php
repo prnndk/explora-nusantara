@@ -68,8 +68,13 @@
                                                         @else
                                                             <div
                                                                 class="mr-auto flex max-w-[80%] flex-col gap-2 rounded-2xl rounded-tl-none bg-neutral-50 p-4 text-neutral-900 md:max-w-[60%] dark:bg-neutral-900 dark:text-white">
-                                                                <span
-                                                                    class="font-semibold">{{ $chat->sender->username }}</span>
+                                                                <span class="font-semibold">
+                                                                    @if ($chat->sender->isSeller())
+                                                                        {{ $chat->sender->seller->company_name }}
+                                                                    @else
+                                                                        {{ $chat->sender->buyer->company_name }}
+                                                                    @endif
+                                                                </span>
                                                                 <div
                                                                     class="text-sm text-neutral-600 dark:text-neutral-300">
                                                                     {{ $chat->message }}

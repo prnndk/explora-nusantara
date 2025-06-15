@@ -26,14 +26,15 @@ class SellerProductTable extends DataTableComponent
             ->orderBy('created_at', 'desc');
     }
 
-    public function deleteProduct($id){
+    public function deleteProduct($id)
+    {
         $product = Product::find($id);
         if ($product) {
             $product->delete();
             $this->dispatch('refreshDataTable');
-            $this->dispatch('close-modal','confirm-delete'.$id);
+            $this->dispatch('close-modal', 'confirm-delete' . $id);
             $this->dispatch('toast', message: 'Berhasil Menghapus produk', data: ['position' => 'top-center', 'type' => 'success']);
-        }else{
+        } else {
             $this->dispatch('toast', message: 'Gagal Menghapus produk', data: ['position' => 'top-center', 'type' => 'error']);
         }
     }
@@ -43,7 +44,10 @@ class SellerProductTable extends DataTableComponent
         return [
             IncrementColumn::make('#'),
             Column::make("Product", "nama")->searchable(),
-            Column::make('Description', 'deskripsi'),
+            Column::make('Description', 'deskripsi')
+                ->format(function ($value) {
+                    return \Illuminate\Support\Str::limit($value, 30);
+                }),
             Column::make('Price', 'harga')
                 ->format(function ($value) {
                     return 'Rp. ' . number_format($value, 0, ',', '.');
@@ -59,7 +63,7 @@ class SellerProductTable extends DataTableComponent
                 ->sortable(),
             Column::make('Actions', 'id')
                 ->format(
-                    fn($value, $row, Column $column) => view('components.table.seller-product.table-action',[
+                    fn($value, $row, Column $column) => view('components.table.seller-product.table-action', [
                         'id' => $value,
                     ])
                 ),

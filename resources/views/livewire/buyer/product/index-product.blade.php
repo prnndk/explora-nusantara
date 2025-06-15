@@ -31,7 +31,7 @@
                             <div>
                                 <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ $product->nama }}</h2>
                                 <p class="text-gray-600 mb-6">
-                                    {{$product->deskripsi}}
+                                    {{ Str::limit($product->deskripsi, 50) }}
                                 </p>
                                 <div class="flex items-center gap-2 mb-4">
                                     <span

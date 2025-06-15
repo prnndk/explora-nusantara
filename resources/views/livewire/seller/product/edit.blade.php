@@ -1,6 +1,6 @@
 <div>
     <form wire:submit.prevent="handleUpdate">
-        <div class="flex flex row gap-6 my-6">
+        <div class="flex row gap-6 my-6">
             <x-button type="danger" class="py-3 px-8 rounded-lg" button="button"
                 x-on:click="$dispatch('open-modal', 'confirm-delete')">Delete
             </x-button>
@@ -27,7 +27,7 @@
             </div>
             <div class="flex flex-col space-y-3 gap-4">
                 <livewire:input.file-upload name="foto_file_id" label="Upload Gambar" user_id="{{ auth()->user()->id }}"
-                    wire:model="foto_file_id" :required="true" :transparent="false" />
+                    wire:model="foto_file_id" :required="!$product->file" :transparent="false" />
                 <div class="space-y-6 mt-3 mb-8">
                     <h6 class="my-2">Gambar Produk</h6>
                     @if ($product->file)

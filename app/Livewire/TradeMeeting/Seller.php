@@ -20,7 +20,7 @@ class Seller extends DataTableComponent
     {
         $this->validate([
             'agenda' => 'required',
-            'duration' => 'required',
+            'duration' => 'required|numeric|min:30',
             'password' => 'required',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
@@ -64,9 +64,12 @@ class Seller extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
-        $this->setConfigurableArea('toolbar-right-start', ['components.table.seller-meeting-action', [
-            'transaction' => Transaction::where('seller_id', auth()->user()->seller->id)->where('status', TransactionStatus::NEW_REQUEST)->with(['buyer'])->get(),
-        ]]);
+        $this->setConfigurableArea('toolbar-right-start', [
+            'components.table.seller-meeting-action',
+            [
+                'transaction' => Transaction::where('seller_id', auth()->user()->seller->id)->where('status', TransactionStatus::DONE)->with(['buyer'])->get(),
+            ]
+        ]);
     }
 
     public function columns(): array

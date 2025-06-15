@@ -28,11 +28,12 @@ class Edit extends Component
             'description' => 'required|string',
             'price' => 'required|numeric|min:1',
             'stock' => 'required|numeric|min:1',
+            'foto_file_id' => 'nullable|exists:files,id',
         ]);
 
         //if foto_file_id is not null, update the foto_file_id
         if ($this->foto_file_id) {
-            $file = File::where('id',$this->product->foto_file_id)->firstOrFail();
+            $file = File::where('id', $this->product->foto_file_id)->firstOrFail();
             //delete file in old path
             if ($file->file_path) {
                 $file_path = public_path($file->file_path);
@@ -48,13 +49,14 @@ class Edit extends Component
             'deskripsi' => $this->description,
             'harga' => $this->price,
             'stok' => $this->stock,
-            'foto_file_id' => File::where('file_path',$this->foto_file_id)->firstOrFail()->id,
+            'foto_file_id' => File::where('file_path', $this->foto_file_id)->first()->id ?? null,
         ]);
 
         $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
     }
 
-    public function deleteProduct(){
+    public function deleteProduct()
+    {
         $this->product->delete();
         $this->dispatch('toast', message: 'Berhasil Menghapus Produk', data: ['position' => 'top-center', 'type' => 'success']);
         $this->redirect('/dashboard/seller/product', navigate: true);

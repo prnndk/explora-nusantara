@@ -50,8 +50,8 @@
         </label>
 
         <!-- Hidden file input -->
-        <input type="file" class="hidden" wire:model="file" id="fileInput" x-ref="fileInput"
-            @if ($required) required @endif>
+        <input type="file" class="hidden" name="{{ $name }}" wire:model="file" id="fileInput"
+            x-ref="fileInput">
 
         <!-- Loading Indicator -->
         <div wire:loading wire:target="file" class="{{ $transparent ? 'text-white' : 'text-neutral-700' }}">

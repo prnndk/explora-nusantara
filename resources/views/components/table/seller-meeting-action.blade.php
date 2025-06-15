@@ -16,8 +16,8 @@
 
             <div class="flex flex-col gap-2 space-y-1 mt-5">
                 <x-input.text label="Agenda" name="agenda" :transparent="false" wire:model="agenda" :required="true" />
-                <x-input.text label="Duration" name="duration" :transparent="false" wire:model="duration"
-                    :required="true" />
+                <x-input.text label="Duration (in minute)" name="duration" :transparent="false" wire:model="duration"
+                    :required="true" type='number' />
                 <x-input.text label="Password" name="password" :transparent="false" wire:model="password"
                     :required="true" />
                 <x-input.text label="Start Time" name="start_time" type="datetime-local" :transparent="false"
@@ -28,7 +28,9 @@
                     wire:model="transaction_select" :required="true">
                     @foreach ($transaction as $tx)
                         <option value="{{ $tx->id }}">
-                            Transaksi {{ 'Rp ' . number_format($tx->total_harga, 0, ',', '.') . ' - ' . $tx->buyer->name }} - {{ $tx->product->nama }}
+                            Transaksi
+                            {{ 'Rp ' . number_format($tx->total_harga, 0, ',', '.') . ' - ' . $tx->buyer->name }} -
+                            {{ $tx->product->nama }}
                         </option>
                     @endforeach
                 </x-input.select>

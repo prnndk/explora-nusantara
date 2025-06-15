@@ -12,7 +12,7 @@
 
     <section class="mt-4 mx-10">
         <h6 class="font-semibold">{{ $product->nama }}</h6>
-        <div class="grid grid-cols-2 gap-16 mt-4 w-full">
+        <div class="grid grid-cols-2 gap-16 mt-4 w-full" x-data="{ activeTab: 'product' }">
             <div class="flex flex-col">
                 @if ($product->file)
                     <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
@@ -51,14 +51,53 @@
             </div>
             <div class="flex flex-col gap-3 w-full">
                 <div class="flex flex-row gap-8">
-                    <a href="" class="text-sm text-mainGreen font-semibold">Product By</a>
-                    <a href="" class="text-sm text-gray-500 font-semibold">Description</a>
-                    <a href="" class="text-sm text-gray-500 font-semibold">Spesifications</a>
+                    <button @click="activeTab = 'product'"
+                        :class="{ 'text-mainGreen': activeTab === 'product', 'text-gray-500': activeTab !== 'product' }"
+                        class="text-sm font-semibold hover:text-mainGreen transition">Product
+                        By</button>
+                    <button @click="activeTab = 'description'"
+                        :class="{ 'text-mainGreen': activeTab === 'description', 'text-gray-500': activeTab !== 'description' }"
+                        class="text-sm font-semibold hover:text-mainGreen transition">Description</button>
+                    <button @click="activeTab = 'specifications'"
+                        :class="{ 'text-mainGreen': activeTab === 'specifications', 'text-gray-500': activeTab !== 'specifications' }"
+                        class="text-sm font-semibold hover:text-mainGreen transition">Specifications</button>
                 </div>
-                <div
-                    class="bg-blue-900 text-white font-bold py-4 px-8 rounded-xl flex justify-center items-center w-3/4">
-                    <span class="text-lg tracking-wide">{{ $product->seller->company_name }}<sup
-                            class="text-xs">&reg;</sup></span>
+
+                <div class="mt-4">
+                    <!-- Product By Tab Content -->
+                    <div x-show="activeTab === 'product'" class="transition-all duration-300">
+                        <div
+                            class="bg-blue-900 text-white font-bold py-4 px-8 rounded-xl flex justify-center items-center w-3/4 mb-4">
+                            <span class="text-lg tracking-wide">{{ $product->seller->company_name }}<sup
+                                    class="text-xs">&reg;</sup></span>
+                        </div>
+
+                    </div>
+
+                    <!-- Description Tab Content -->
+                    <div x-show="activeTab === 'description'" class="transition-all duration-300" x-cloak>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <h3 class="font-semibold mb-2">Product Description</h3>
+                            <p>{{ $product->deskripsi ?? 'No description available for this product.' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Specifications Tab Content -->
+                    <div x-show="activeTab === 'specifications'" class="transition-all duration-300" x-cloak>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <h3 class="font-semibold mb-2">Product Specifications</h3>
+                            @if ($product->specifications)
+                                <ul class="list-disc pl-5 space-y-1">
+                                    @foreach (json_decode($product->specifications) as $key => $value)
+                                        <li><span class="font-medium">{{ $key }}:</span> {{ $value }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p>No specifications available for this product.</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
