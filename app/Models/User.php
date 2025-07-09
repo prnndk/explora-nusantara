@@ -104,6 +104,12 @@ class User extends Authenticatable
     public function getUserUnreadChatsCount(): int
     {
         $chats = TransactionChat::where('sender_id', '!=', $this->id)
+            ->whereIn('transaction_id', function ($query) {
+                $query->select('id')
+                    ->from('transactions')
+                    ->when($this->isBuyer(), fn($query) => $query->where('buyer_id', $this->buyer?->id))
+                    ->when($this->isSeller(), fn($query) => $query->where('seller_id', $this->seller?->id));
+            })
             ->where('read_status', false)
             ->count();
         return $chats;
