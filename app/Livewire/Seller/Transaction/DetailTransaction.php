@@ -16,6 +16,6 @@ class DetailTransaction extends Component
 
     public function render()
     {
-        return view('livewire..seller.transaction.detail-transaction');
+        return view('livewire.seller.transaction.detail-transaction');
     }
 }

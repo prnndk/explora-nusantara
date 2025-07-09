@@ -66,14 +66,18 @@ class User extends Authenticatable
         return $this->register_status !== RegisterStatus::WAITING;
     }
 
-    public function isBuyer(): bool{
+    public function isBuyer(): bool
+    {
         return $this->role === UserRole::BUYER;
     }
-    public function isSeller(): bool{
+
+    public function isSeller(): bool
+    {
         return $this->role === UserRole::SELLER;
     }
 
-    public function isAdmin(): bool{
+    public function isAdmin(): bool
+    {
         return $this->role === UserRole::ADMIN;
     }
 
@@ -87,7 +91,21 @@ class User extends Authenticatable
         return $this->hasOne(Seller::class, 'user_id', 'id');
     }
 
-    public function buyer(): HasOne{
+    public function buyer(): HasOne
+    {
         return $this->hasOne(Buyer::class, 'user_id', 'id');
+    }
+
+    public function chats(): HasMany
+    {
+        return $this->hasMany(TransactionChat::class, 'sender_id', 'id');
+    }
+
+    public function getUserUnreadChatsCount(): int
+    {
+        $chats = TransactionChat::where('sender_id', '!=', $this->id)
+            ->where('read_status', false)
+            ->count();
+        return $chats;
     }
 }

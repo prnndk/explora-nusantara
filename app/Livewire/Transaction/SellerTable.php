@@ -24,8 +24,14 @@ class SellerTable extends DataTableComponent
             ->where('transactions.seller_id', auth()->user()->seller->id)
             ->with([
                 'product',
-                'buyer'
+                'chat' => function ($query) {
+                    $query->where(function ($subQuery) {
+                        $subQuery->where('sender_id', '!=', auth()->id());
+                    })->where('read_status', false)->count();
+                },
+                'buyer',
             ])
+            ->withCount('chat')
             ->orderBy('transactions.created_at', 'desc');
     }
 
@@ -76,9 +82,10 @@ class SellerTable extends DataTableComponent
     {
         return [
             IncrementColumn::make('#'),
-            Column::make("Product", "product.nama")
-                ->searchable()
-                ->sortable(),
+            Column::make("Product", "product.name")
+                ->label(fn($row, Column $column) => view('components.table.transaction.name-with-chat-count')->withRow($row))
+                ->sortable()
+                ->searchable(),
             Column::make("Duration")
                 ->label(function () {
                     return '10 Hari';

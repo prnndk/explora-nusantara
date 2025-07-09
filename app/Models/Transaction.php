@@ -37,4 +37,8 @@ class Transaction extends Model
         return $this->hasOne(Contract::class, 'transaction_id', 'id');
     }
 
+    public function chat(){
+        return $this->hasMany(TransactionChat::class, 'transaction_id', 'id');
+    }
+
 }

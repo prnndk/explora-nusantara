@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Events\Chatting;
 use App\Models\Transaction;
 use Exception;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\TransactionChat as TransactionChatModel;
 
@@ -17,11 +18,14 @@ class TransactionChat extends Component
 
     public $user_id;
 
+    public $unreadChatsCount = 0;
+
     public function mount(Transaction $transaction)
     {
         $this->transaction = $transaction;
         $this->user_id = auth()->id();
         $this->updateChats();
+        $this->updateUnreadCount();
     }
 
     public function updateChats()
@@ -30,7 +34,16 @@ class TransactionChat extends Component
             ->with('sender')
             ->orderBy('created_at', 'asc')
             ->get();
+        $this->updateUnreadCount();
         $this->dispatch('messageUpdated');
+    }
+
+    private function updateUnreadCount()
+    {
+        $this->unreadChatsCount = TransactionChatModel::where('transaction_id', $this->transaction->id)
+            ->where('sender_id', '!=', auth()->id())
+            ->where('read_status', false)
+            ->count();
     }
 
     public function getListeners()
@@ -70,6 +83,28 @@ class TransactionChat extends Component
             $this->message = '';
         } catch (Exception $e) {
             return $this->dispatch('toast', message: 'Terjadi kesalahan, ' . $e->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
+        }
+    }
+
+    #[On('updateChats')]
+    public function updateReadStatus($chatId)
+    {
+        try {
+            $chat = TransactionChatModel::findOrFail($chatId);
+            if ($chat->sender_id !== auth()->id()) {
+                $chat->update(['read_status' => true]);
+                // Mark all previous message as read if exists
+                $previousChat = TransactionChatModel::where('transaction_id', $chat->transaction_id)
+                    ->where('id', '<', $chat->id)
+                    ->where('sender_id', '!=', auth()->id())
+                    ->orderBy('id', 'desc')
+                    ->first();
+                if ($previousChat && !$previousChat->read_status) {
+                    $previousChat->update(['read_status' => true]);
+                }
+            }
+        } catch (Exception $e) {
+            return $this->dispatch('toast', message: 'Terjadi kesalahan saat memperbarui status baca: ' . $e->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
         }
     }
 

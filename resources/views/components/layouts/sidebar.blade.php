@@ -57,7 +57,7 @@
                         :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
                     <x-layouts.sidebar.sidebar-item route="{{ route('buyer.product.index') }}" :title="'Product'"
                         :active="request()->routeIs('buyer.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.transaction.index') }}" :title="'Transaction'"
+                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.transaction.index') }}" :title="'Transaction'" :chatCount="auth()->user()->getUserUnreadChatsCount()"
                         :active="request()->routeIs('buyer.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="false" />
                     <x-layouts.sidebar.sidebar-item route="{{ route('buyer.trade-meeting.index') }}" :title="'Trade Meeting'"
                         :active="request()->routeIs('buyer.trade-meeting.index')" icon="heroicon-s-chat-bubble-bottom-center-text" :isSubmenu="false" />
@@ -71,7 +71,7 @@
                     <x-layouts.sidebar.sidebar-item route="{{ route('seller.product.index') }}" :title="'Product'"
                         :active="request()->routeIs('seller.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
                     <x-layouts.sidebar.sidebar-item route="{{ route('seller.transaction.index') }}" :title="'Transaction'"
-                        :active="request()->routeIs('seller.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="false" />
+                        :active="request()->routeIs('seller.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="false" :chatCount="auth()->user()->getUserUnreadChatsCount()" />
                     <x-layouts.sidebar.sidebar-item route="{{ route('seller.trade-meeting.index') }}"
                         :title="'Trade Meeting'" :active="request()->routeIs('seller.trade-meeting.*')" icon="heroicon-s-chat-bubble-bottom-center-text"
                         :isSubmenu="false" />
