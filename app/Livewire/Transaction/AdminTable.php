@@ -8,6 +8,7 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Transaction;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
+use Str;
 
 class AdminTable extends DataTableComponent
 {
@@ -60,6 +61,9 @@ class AdminTable extends DataTableComponent
         return [
             IncrementColumn::make('#'),
             Column::make("Product", "product.nama")
+                ->format(
+                    fn($value, $row, Column $column) => Str::limit($value, 50, '...')
+                )
                 ->searchable()
                 ->sortable(),
             Column::make("Contract")

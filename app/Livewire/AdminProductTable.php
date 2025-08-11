@@ -47,7 +47,11 @@ class AdminProductTable extends DataTableComponent
     {
         return [
             IncrementColumn::make('#'),
-            Column::make("Product", "nama")->searchable(),
+            Column::make("Product", "nama")
+                ->format(
+                    fn($value, $row, Column $column) => Str::limit($value, 50, '...')
+                )
+                ->searchable(),
             Column::make('Description', 'deskripsi')->format(
                 fn($value, $row, Column $column) => Str::limit($value, 25, '...')
             ),
