@@ -7,6 +7,7 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Contract;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
+use Str;
 
 class ContractTable extends DataTableComponent
 {
@@ -43,6 +44,9 @@ class ContractTable extends DataTableComponent
         return [
             IncrementColumn::make('#'),
             Column::make('Product', 'product.nama')
+                ->format(
+                    fn($value, $row, Column $column) => Str::limit($value, 50, '...')
+                )
                 ->searchable()
                 ->sortable(),
             Column::make('Buyer', 'buyer.name'),

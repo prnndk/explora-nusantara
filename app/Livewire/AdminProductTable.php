@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
+use Str;
 
 class AdminProductTable extends DataTableComponent
 {
@@ -47,7 +48,9 @@ class AdminProductTable extends DataTableComponent
         return [
             IncrementColumn::make('#'),
             Column::make("Product", "nama")->searchable(),
-            Column::make('Description', 'deskripsi'),
+            Column::make('Description', 'deskripsi')->format(
+                fn($value, $row, Column $column) => Str::limit($value, 25, '...')
+            ),
             Column::make('Price', 'harga')
                 ->format(function ($value) {
                     return 'Rp. ' . number_format($value, 0, ',', '.');
