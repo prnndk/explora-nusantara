@@ -2,6 +2,7 @@
 
 namespace App\Livewire\TradeMeeting;
 
+use App\Enums\ProductStatus;
 use App\Enums\TransactionStatus;
 use App\Models\TradeMeeting;
 use App\Models\Transaction;
@@ -101,10 +102,12 @@ class Seller extends DataTableComponent
             Column::make('Actions', 'zoom_id')
                 ->format(
                     function ($value, $row, Column $column) {
-                        $zoom_meeting_id = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                        $zoom_meeting_id = $zoom_meeting_id['data']['join_url'];
+                        $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                        $zoom_meeting_url = isset($zoom_meeting_data['data']) && isset($zoom_meeting_data['data']['join_url'])
+                            ? $zoom_meeting_data['data']['join_url']
+                            : '';
                         return view('components.table.seller-meeting-table-action', [
-                            'zoom_meeting_id' => $zoom_meeting_id,
+                            'zoom_meeting_id' => $row->status === ProductStatus::REJECTED ? '' : $zoom_meeting_url,
                         ]);
                     }
                 ),
