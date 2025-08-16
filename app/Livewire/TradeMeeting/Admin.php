@@ -18,7 +18,8 @@ class Admin extends DataTableComponent
         $this->setPrimaryKey('id');
     }
 
-    public function approveMeeting($id){
+    public function approveMeeting($id)
+    {
         $meeting = TradeMeeting::where('zoom_id', $id)->firstOrFail();
 
         $meeting->status = ProductStatus::APPROVED;
@@ -26,11 +27,12 @@ class Admin extends DataTableComponent
         $meeting->save();
 
         $this->dispatch('refreshDataTable');
-        $this->dispatch('close-modal','confirm-action-'.$id);
+        $this->dispatch('close-modal', 'confirm-action-' . $id);
         $this->dispatch('toast', message: 'Berhasil merubah status', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
-    public function cancelMeeting($id){
+    public function cancelMeeting($id)
+    {
         $meeting = TradeMeeting::where('zoom_id', $id)->firstOrFail();
 
         $meeting->status = ProductStatus::REJECTED;
@@ -38,7 +40,7 @@ class Admin extends DataTableComponent
         $meeting->save();
 
         $this->dispatch('refreshDataTable');
-        $this->dispatch('close-modal','confirm-action-'.$id);
+        $this->dispatch('close-modal', 'confirm-action-' . $id);
         $this->dispatch('toast', message: 'Berhasil merubah status', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
@@ -71,10 +73,12 @@ class Admin extends DataTableComponent
                 ->format(
                     function ($value, $row, Column $column) {
                         $zoom_meeting_id = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                        $zoom_meeting_id = $zoom_meeting_id['data']['join_url'];
+                        $zoom_meeting_url = isset($zoom_meeting_id['data']) && isset($zoom_meeting_id['data']['join_url'])
+                            ? $zoom_meeting_id['data']['join_url']
+                            : '';
                         return view('components.table.admin-meeting-action', [
-                            'zoom_meeting_id' => $zoom_meeting_id,
-                            'id'=> $value
+                            'zoom_meeting_id' => $zoom_meeting_url,
+                            'id' => $value
                         ]);
                     }
                 ),
