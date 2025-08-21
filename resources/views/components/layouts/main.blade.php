@@ -31,8 +31,9 @@
            background-repeat: no-repeat;
            background-attachment: fixed;">
 
-    <div class="flex px-6">
+    <div class="flex px-6 justify-between items-starts w-full">
         <x-auth-header />
+        <img src="{{ asset('images/support.svg') }}" alt="Support Icon" class="w-32 h-16 md:w-48 md:h-24" />
     </div>
 
     <section class="flex items-center justify-center h-full w-full mt-5">

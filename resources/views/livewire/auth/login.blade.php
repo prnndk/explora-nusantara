@@ -38,6 +38,18 @@
             <h1 class="text-4xl font-bold leading-tight">
                 Unlocking Global <br> Potential for <br> Indonesia's SMEs
             </h1>
+            <div class="flex mt-4 gap-4">
+                <a href="https://drive.google.com/drive/folders/1Dw0SLb5PXIvnpODmSTKk7ZtDUDRBfsVa?usp=sharing">
+                    <x-button type="primary" addClasses="w-full">
+                        Video Tutorial
+                    </x-button>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1lY0UqAve_n1TNJudXpvv35kDAZiMY8Qy?usp=sharing">
+                    <x-button type="primary" addClasses="w-full">
+                        Buku Panduan
+                    </x-button>
+                </a>
+            </div>
         </div>
     </div>
     @push('scripts')
