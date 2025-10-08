@@ -4,13 +4,15 @@
     'title' => 'Chat',
     'active' => false,
     'chatCount' => 0,
-    'isSubmenu' => false
+    // kita tidak perlu definisikan sidebarOpenStatus sebagai prop,
+    // karena kita harapkan Alpine akan menyediakan variabel itu di context komponen ini
 ])
 
 <li>
     <a href="{{ $route }}"
        wire:navigate
        class="flex items-center px-5 py-3 hover:bg-ecstasy {{ $active ? 'bg-ecstasy' : '' }}"
+       :title="! sidebarOpenStatus ? '{{ $title }}' : ''"
     >
         <div class="relative">
             <x-dynamic-component

@@ -26,16 +26,17 @@
 
                 <h6 class="font-semibold text-2xl">Contract</h6>
                 <div class="flex flex-col" x-data="{ dropdownOpen: false }">
-                    @if ($transaction->contract)
-                        <div class="flex flex-col gap-2 ">
-                            <p class="font-semibold">Status: </p>
+                    @if ($transaction->contract && $transaction->contract->file_id)
+                        {{-- tampilkan dropdown file --}}
+                        <div class="flex flex-col gap-2">
+                            <p class="font-semibold">Status:</p>
                             <div class="w-fit">
                                 <x-table.transaction-badge :status="$transaction->contract->status" />
                             </div>
-                            <p class="font-semibold">File: </p>
-                            <div class="relative">
-                                <button @click.prevent="dropdownOpen = true"
-                                    class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200/60 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none">
+                            <p class="font-semibold">File:</p>
+                            <div x-data="{ dropdownOpen: false }" class="relative">
+                                <button @click.prevent="dropdownOpen = !dropdownOpen"
+                                    class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-neutral-100 focus:ring-2 focus:ring-neutral-200/60 focus:ring-offset-2">
                                     <x-heroicon-o-document class="w-5 h-5 mr-3" />
                                     {{ str_replace('uploads/', '', $transaction->contract->file->file_path) }}
                                     <x-heroicon-c-ellipsis-vertical class="w-5 h-5 ml-3" />
@@ -47,27 +48,25 @@
                                     class="absolute right-0 top-full mt-2 z-50 w-56" x-cloak>
                                     <div
                                         class="p-1 mt-1 text-sm bg-white border rounded-md shadow-md border-neutral-200/70 text-neutral-700">
-                                        <a href="/view-file/{{ $transaction->contract->file_id }}"
+                                        <a href="/view-file/{{ $transaction->contract->file_id }}" target="_blank"
                                             @click="dropdownOpen = false"
-                                            class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
+                                            class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900">
                                             <span>Open File</span>
                                         </a>
                                         <button
                                             @click="dropdownOpen = false; $dispatch('open-modal', 'update-contract')"
-                                            class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
+                                            class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900">
                                             <span>Edit File</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     @else
-                        <livewire:input.file-upload name="contract_document" label="Unggah Dokumen Kontrak"
-                            user_id="{{ auth()->user()->id }}" wire:model="contract_document" :required="true"
+                        {{-- kalau kontrak belum ada / udah dihapus --}}
+                        <livewire:input.file-upload name="contract_document" label="Upload Contract Document"
+                            user_id="{{ auth()->id() }}" wire:model="contract_document" :required="true"
                             :transparent="false" />
-                        @error('contract_document')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-
                         <x-button type="primary" class="mt-3" wire:click="uploadContract">
                             Upload Contract
                         </x-button>

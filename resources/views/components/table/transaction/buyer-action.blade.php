@@ -1,21 +1,48 @@
-<div class="flex flex-row gap-2">
-    <button
+<div class="flex flex-row gap-2 items-center">
+
+    {{-- Cancel Transaction --}}
+    <button x-data="{ showTooltip: false }"
+        @mouseenter="showTooltip = true"
+        @mouseleave="showTooltip = false"
         x-on:click="$dispatch('open-modal', 'confirm-delete-{{ $id }}')"
-        class="text-red-normal hover:text-red-dark">
-        <x-heroicon-s-x-circle class="size-6 text-red-normal hover:text-red-dark"/>
+        class="relative flex items-center justify-center p-2 rounded-lg text-red-normal hover:bg-gray-100 transition">
+        <x-heroicon-s-x-circle class="w-6 h-6" />
+        <span x-show="showTooltip"
+              x-transition
+              class="absolute -top-7 left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg whitespace-nowrap">
+            Cancel Transaction
+        </span>
     </button>
-    <a href="{{route('buyer.transaction.detail',$id)}}" wire:navigate class="text-mainGreen">
-        <x-heroicon-s-arrow-path class="size-6"/>
+
+    {{-- Detail Transaction (warna oranye + solid icon) --}}
+    <a href="{{ route('buyer.transaction.detail', $id) }}"
+       wire:navigate
+       x-data="{ showTooltip: false }"
+       @mouseenter="showTooltip = true"
+       @mouseleave="showTooltip = false"
+       class="relative flex items-center justify-center p-2 rounded-lg text-yellow-normal hover:bg-gray-100 transition">
+        <x-heroicon-s-information-circle class="w-6 h-6" />
+        <span x-show="showTooltip"
+              x-transition
+              class="absolute -top-7 left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg whitespace-nowrap">
+            See Detail
+        </span>
     </a>
+
 </div>
-<x-delete-modal name="confirm-delete-{{$id}}" :show="false" title="Are you sure want to cancel this transaction?">
+
+{{-- Modal Konfirmasi Cancel --}}
+<x-delete-modal name="confirm-delete-{{ $id }}" :show="false"
+    title="Are you sure want to cancel this transaction?">
     <div class="p-3 grid grid-cols-2 justify-between items-center gap-4">
         <button type="button"
-                x-on:click="$dispatch('close-modal', 'confirm-delete-{{$id}}')"
+                x-on:click="$dispatch('close-modal', 'confirm-delete-{{ $id }}')"
                 class="inline-flex items-center justify-center px-8 py-3 font-medium tracking-wide text-red-normal hover:text-white transition-colors duration-200 bg-transparent border border-red-normal rounded-lg hover:bg-red-normal focus:ring-2 focus:ring-offset-2 focus:ring-red-700 focus:shadow-outline focus:outline-none">
             No
         </button>
-        <button type="button" wire:click="cancelTransaction('{{$id}}')" x-on:click="$dispatch('close-modal', 'confirm-delete-{{$id}}')"
+        <button type="button"
+                wire:click="cancelTransaction('{{ $id }}')"
+                x-on:click="$dispatch('close-modal', 'confirm-delete-{{ $id }}')"
                 class="inline-flex items-center justify-center px-8 py-3 font-medium tracking-wide text-white transition-colors duration-200 bg-red-normal rounded-lg hover:bg-red-dark focus:ring-2 focus:ring-offset-2 focus:ring-red-dark focus:shadow-outline focus:outline-none">
             Yes
         </button>

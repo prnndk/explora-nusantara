@@ -32,7 +32,14 @@ class FileUpload extends Component
     public function updatedFile($value)
     {
         $this->temp_upload = $value;
-        $this->originalFileName = $value->getClientOriginalName();
+
+        // Pastikan hanya ambil nama file jika objeknya instance dari UploadedFile
+        if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $this->originalFileName = $value->getClientOriginalName();
+        } else {
+            // Kalau cuma string path (file lama), pakai nama file dari path-nya saja
+            $this->originalFileName = basename($value);
+        }
     }
 
     public function saveFile()

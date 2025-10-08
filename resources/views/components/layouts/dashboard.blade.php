@@ -27,8 +27,14 @@
 <body x-data="sidebarData">
     <section class="h-full w-full my-5">
         <x-layouts.sidebar />
-        <main :class="{ 'ml-80 px-10 max-w-5xl ': sidebarOpenStatus, 'ml-20 px-6 max-w-full': !sidebarOpenStatus }"
-            class="transition-all duration-300">
+        <main
+            :class="{
+                'ml-[18.5rem] px-10 w-[calc(100%-18.5rem)]': sidebarOpenStatus,
+                'ml-20 px-6 w-[calc(100%-5rem)]': !sidebarOpenStatus
+            }"
+            class="transition-all duration-300 max-w-full">
+
+
             {{ $slot }}
         </main>
     </section>

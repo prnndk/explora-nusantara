@@ -181,7 +181,7 @@
 
                     <div x-show="showAll" x-transition>
                         <label class="flex items-center gap-3 cursor-pointer mt-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/id/5/55/BNI_logo.svg" alt="BNI"
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" alt="BNI"
                                 class="w-8 h-8" />
                             <span class="text-gray-700">BNI Virtual Account</span>
                             <input type="radio" name="payment" class="ml-auto" value="BNI"

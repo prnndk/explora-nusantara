@@ -126,14 +126,6 @@
                                     class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
                                     <span>Open File</span>
                                 </a>
-                                <a href="#_" @click="dropdownOpen = false"
-                                    class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
-                                    <span>Edit File</span>
-                                </a>
-                                <a href="#_" @click="dropdownOpen = false"
-                                    class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
-                                    <span>Delete File</span>
-                                </a>
                             </div>
                         @endif
                     </div>
