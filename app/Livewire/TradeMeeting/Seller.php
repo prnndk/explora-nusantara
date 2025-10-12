@@ -46,7 +46,7 @@ class Seller extends DataTableComponent
             'buyer_id' => Transaction::find($this->transaction_select)->buyer->id,
             'password' => $this->password,
             'topic' => $this->agenda,
-            'start_time' => $zoom['start_time'],
+            'start_time' => Carbon::parse($zoom['start_time'])->format('Y-m-d H:i:s'),
             'duration' => $zoom['duration'],
         ]);
 
