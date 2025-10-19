@@ -25,9 +25,14 @@ class Seller extends DataTableComponent
             'duration' => 'required|numeric|min:30',
             'password' => 'required',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'end_time' => 'required|date',
             'transaction_select' => 'required|exists:transactions,id',
         ]);
+
+        if (Carbon::parse($this->end_time)->lessThanOrEqualTo(Carbon::parse($this->start_time))) {
+            $this->addError('end_time', 'Waktu selesai harus lebih besar dari waktu mulai.');
+            return;
+        }
 
         try {
             $response = \Jubaer\Zoom\Facades\Zoom::createMeeting([
@@ -49,7 +54,7 @@ class Seller extends DataTableComponent
         } catch (\Throwable $e) {
             Log::error('Zoom meeting creation failed', ['message' => $e->getMessage()]);
             $this->addError('zoom', 'Gagal membuat meeting Zoom. Silakan coba lagi nanti.');
-            return $this->dispatch('toast', message: 'Gagal Membuat Meeting', data: ['position' => 'top-right', 'type' => 'error']);
+            return $this->dispatch('toast', message: 'Gagal Membuat Meeting', data: ['position' => 'top-right', 'type' => 'danger']);
         }
 
         TradeMeeting::create([
