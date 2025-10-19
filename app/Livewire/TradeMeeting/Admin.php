@@ -3,10 +3,10 @@
 namespace App\Livewire\TradeMeeting;
 
 use App\Enums\ProductStatus;
+use App\Models\TradeMeeting;
 use Carbon\Carbon;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\TradeMeeting;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
 
 class Admin extends DataTableComponent
@@ -72,13 +72,29 @@ class Admin extends DataTableComponent
             Column::make('Actions', 'zoom_id')
                 ->format(
                     function ($value, $row, Column $column) {
-                        $zoom_meeting_id = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                        $zoom_meeting_url = isset($zoom_meeting_id['data']) && isset($zoom_meeting_id['data']['join_url'])
-                            ? $zoom_meeting_id['data']['join_url']
-                            : '';
+                        $zoom_meeting_url = '';
+
+                        try {
+                            $response = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+
+                            if (is_array($response)) {
+                                $data = $response['data'] ?? $response;
+                                $zoom_meeting_url = $data['start_url'] ?? $data['join_url'] ?? '';
+                            } elseif (is_object($response)) {
+                                $data = $response->data ?? $response;
+                                $zoom_meeting_url = $data->start_url ?? $data->join_url ?? '';
+                            }
+                        } catch (\Throwable $e) {
+                            \Illuminate\Support\Facades\Log::error('Failed to fetch Zoom meeting.', [
+                                'zoom_id' => $row->zoom_id,
+                                'exception' => get_class($e),
+                                'message' => $e->getMessage(),
+                            ]);
+                        }
+
                         return view('components.table.admin-meeting-action', [
                             'zoom_meeting_id' => $zoom_meeting_url,
-                            'id' => $value
+                            'id' => $value,
                         ]);
                     }
                 ),

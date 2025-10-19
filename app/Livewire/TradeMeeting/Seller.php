@@ -43,6 +43,10 @@ class Seller extends DataTableComponent
                 'timezone' => 'Asia/Jakarta',
                 'password' => $this->password,
                 'end_time' => Carbon::parse($this->end_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
+                'settings'=>[
+                    'join_before_host'=> true,
+                    'waiting_room'=> false,
+                ]
             ]);
 
             if (!isset($response['data']) || !is_array($response['data'])) {
