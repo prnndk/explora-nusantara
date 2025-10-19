@@ -8,6 +8,7 @@ use App\Models\TradeMeeting;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
@@ -28,17 +29,28 @@ class Seller extends DataTableComponent
             'transaction_select' => 'required|exists:transactions,id',
         ]);
 
-        $zoom = \Jubaer\Zoom\Facades\Zoom::createMeeting([
-            'topic' => $this->agenda,
-            'type' => 2,
-            'start_time' => Carbon::parse($this->start_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
-            'duration' => $this->duration,
-            'timezone' => 'Asia/Jakarta',
-            'password' => $this->password,
-            'end_time' => Carbon::parse($this->end_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
-        ]);
+        try {
+            $response = \Jubaer\Zoom\Facades\Zoom::createMeeting([
+                'topic' => $this->agenda,
+                'type' => 2,
+                'start_time' => Carbon::parse($this->start_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
+                'duration' => $this->duration,
+                'timezone' => 'Asia/Jakarta',
+                'password' => $this->password,
+                'end_time' => Carbon::parse($this->end_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
+            ]);
 
-        $zoom = $zoom['data'];
+            if (!isset($response['data']) || !is_array($response['data'])) {
+                Log::error($response);
+                throw new \RuntimeException('Invalid response from Zoom API.');
+            }
+
+            $zoom = $response['data'];
+        } catch (\Throwable $e) {
+            Log::error('Zoom meeting creation failed', ['message' => $e->getMessage()]);
+            $this->addError('zoom', 'Gagal membuat meeting Zoom. Silakan coba lagi nanti.');
+            return $this->dispatch('toast', message: 'Gagal Membuat Meeting', data: ['position' => 'top-right', 'type' => 'error']);
+        }
 
         TradeMeeting::create([
             'zoom_id' => $zoom['id'],
