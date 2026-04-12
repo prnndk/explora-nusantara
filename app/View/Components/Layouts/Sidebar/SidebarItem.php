@@ -8,28 +8,29 @@ use Illuminate\View\Component;
 
 class SidebarItem extends Component
 {
-
     public string $icon;
     public bool $active;
     public string $route;
     public string $title;
     public bool $isSubmenu;
+    public int $chatCount; 
 
-    /**
-     * Create a new component instance.
-     */
-    public function __construct(string $icon, bool $active, string $route, string $title, bool $isSubmenu)
-    {
+    public function __construct(
+        string $icon,
+        bool $active,
+        string $route,
+        string $title,
+        bool $isSubmenu,
+        int $chatCount = 0 
+    ) {
         $this->icon = $icon;
         $this->active = $active;
         $this->route = $route;
         $this->title = $title;
         $this->isSubmenu = $isSubmenu;
+        $this->chatCount = $chatCount; 
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.layouts.sidebar.sidebar-item');

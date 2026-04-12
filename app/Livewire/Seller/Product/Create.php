@@ -8,9 +8,13 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use App\Models\Category;
+use Livewire\WithFileUploads;
+use App\Models\ProductImage;
 
 class Create extends Component
 {
+    use WithFileUploads;
     public $name, $description, $price, $stock, $foto_file_id;
 
     public function rules()
@@ -20,10 +24,21 @@ class Create extends Component
             'description' => 'required|string',
             'price' => 'required|numeric|min:1',
             'stock' => 'required|numeric|min:1',
+            'category_id' => 'required|exists:categories,id',
             'foto_file_id' => 'required|exists:files,file_path',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|max:2048',
         ];
     }
+    public $images = [];
 
+    public $category_id;
+    public $categories = [];
+
+    public function mount()
+    {
+        $this->categories = Category::all();
+    }
     public function handleCreation()
     {
         $this->validate();
@@ -37,14 +52,21 @@ class Create extends Component
             $product->terjual = 0;
             $product->foto_file_id = File::where('file_path', $this->foto_file_id)->firstOrFail()->id;
             $product->status = ProductStatus::NEW_REQUEST;
+            $product->category_id = $this->category_id;
             $product->seller_id = auth()->user()->seller->id;
             $product->save();
-
+            if ($this->images) {
+                foreach ($this->images as $image) {
+                    $product->images()->create([
+                        'image_path' => $image->store('products', 'public')
+                    ]);
+                }
+            }
             DB::commit();
             $this->reset();
 
             $this->dispatch('toast', message: 'Berhasil Membuat Produk', data: ['position' => 'top-right', 'type' => 'success']);
-            return redirect()->route('seller.product.index');
+            $this->redirect(route('seller.product.index'), navigate: true);
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
             return $this->dispatch('toast', message: 'File tidak dapat ditemukan', data: ['position' => 'top-right', 'type' => 'error']);

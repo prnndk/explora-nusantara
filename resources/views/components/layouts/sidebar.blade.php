@@ -32,51 +32,56 @@
         <nav class="mt-3">
             <ul>
                 @if (auth()->user()->role === \App\Enums\UserRole::ADMIN)
-                    <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
-                        icon="heroicon-s-home" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
-                        :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
-                    <x-layouts.sidebar.item-dropdown icon="heroicon-s-clipboard-document-check" title="Validation"
-                        >
-                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.product.index') }}" :title="'Product'"
-                            :active="request()->routeIs('admin.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="true" />
-                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.transaction.index') }}"
-                            :title="'Transaction and Live Chat'" :active="request()->routeIs('admin.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="true" />
-                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.trade-meeting.index') }}"
-                            :title="'Trade Meeting'" :active="request()->routeIs('admin.trade-meeting.*')" icon="heroicon-s-chat-bubble-bottom-center-text"
-                            :isSubmenu="true" />
-                        <x-layouts.sidebar.sidebar-item route="{{ route('admin.contract.index') }}" :title="'Contract'"
-                            :active="request()->routeIs('admin.contract.*')" icon="heroicon-o-document" :isSubmenu="true" />
-                    </x-layouts.sidebar.item-dropdown>
-                    <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
-                        :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
+                    icon="heroicon-s-home" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
+                    :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
+                <x-layouts.sidebar.item-dropdown icon="heroicon-s-clipboard-document-check" title="Validation">
+                    <x-layouts.sidebar.sidebar-item route="{{ route('admin.product.index') }}" :title="'Product'"
+                        :active="request()->routeIs('admin.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="true" />
+                    <x-layouts.sidebar.sidebar-item route="{{ route('admin.transaction.index') }}"
+                        :title="'Transaction and Live Chat'" :active="request()->routeIs('admin.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="true" />
+                    <x-layouts.sidebar.sidebar-item route="{{ route('admin.trade-meeting.index') }}"
+                        :title="'Trade Meeting'" :active="request()->routeIs('admin.trade-meeting.*')" icon="heroicon-s-chat-bubble-bottom-center-text"
+                        :isSubmenu="true" />
+                    <x-layouts.sidebar.sidebar-item route="{{ route('admin.contract.index') }}" :title="'Contract'"
+                        :active="request()->routeIs('admin.contract.*')" icon="heroicon-o-document" :isSubmenu="true" />
+                </x-layouts.sidebar.item-dropdown>
+                <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
+                    :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
                 @elseif(auth()->user()->role === \App\Enums\UserRole::BUYER)
-                    <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
-                        icon="heroicon-s-home" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
-                        :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.product.index') }}" :title="'Product'"
-                        :active="request()->routeIs('buyer.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.transaction.index') }}" :title="'Transaction and Live Chat'" :chatCount="auth()->user()->getUserUnreadChatsCount()"
-                        :active="request()->routeIs('buyer.transaction and Live Chat.*')" icon="heroicon-s-wallet" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('buyer.trade-meeting.index') }}" :title="'Trade Meeting'"
-                        :active="request()->routeIs('buyer.trade-meeting.index')" icon="heroicon-s-chat-bubble-bottom-center-text" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
-                        :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
+                    icon="heroicon-s-home" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
+                    :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('buyer.product.index') }}" :title="'Product'"
+                    :active="request()->routeIs('buyer.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
+                <livewire:sidebar-chat-badge
+                    :route="route('buyer.transaction.index')"
+                    title="Transaction and Live Chat"
+                    icon="heroicon-s-wallet"
+                    :active="request()->routeIs('buyer.transaction.*')" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('buyer.trade-meeting.index') }}" :title="'Trade Meeting'"
+                    :active="request()->routeIs('buyer.trade-meeting.index')" icon="heroicon-s-chat-bubble-bottom-center-text" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
+                    :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
                 @elseif(auth()->user()->role === \App\Enums\UserRole::SELLER)
-                    <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
-                        icon="heroicon-s-home" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
-                        :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('seller.product.index') }}" :title="'Product'"
-                        :active="request()->routeIs('seller.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('seller.transaction.index') }}" :title="'Transaction and Live Chat'"
-                        :active="request()->routeIs('seller.transaction.*')" icon="heroicon-s-wallet" :isSubmenu="false" :chatCount="auth()->user()->getUserUnreadChatsCount()" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('seller.trade-meeting.index') }}"
-                        :title="'Trade Meeting'" :active="request()->routeIs('seller.trade-meeting.*')" icon="heroicon-s-chat-bubble-bottom-center-text"
-                        :isSubmenu="false" />
-                    <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
-                        :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('home') }}" :title="'Home'" :active="request()->routeIs('dashboard')"
+                    icon="heroicon-s-home" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('user-profile') }}" :title="'Profile'"
+                    :active="request()->routeIs('user-profile')" icon="heroicon-s-user" :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('seller.product.index') }}" :title="'Product'"
+                    :active="request()->routeIs('seller.product.*')" icon="heroicon-s-shopping-cart" :isSubmenu="false" />
+                <livewire:sidebar-chat-badge
+                    :route="route('seller.transaction.index')"
+                    title="Transaction and Live Chat"
+                    icon="heroicon-s-wallet"
+                    :active="request()->routeIs('seller.transaction.*')" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('seller.trade-meeting.index') }}"
+                    :title="'Trade Meeting'" :active="request()->routeIs('seller.trade-meeting.*')" icon="heroicon-s-chat-bubble-bottom-center-text"
+                    :isSubmenu="false" />
+                <x-layouts.sidebar.sidebar-item route="{{ route('tutorial') }}" :title="'Tutorial'"
+                    :active="request()->routeIs('tutorial')" icon="heroicon-s-light-bulb" :isSubmenu="false" />
                 @endif
             </ul>
         </nav>

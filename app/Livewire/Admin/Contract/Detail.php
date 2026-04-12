@@ -13,7 +13,8 @@ class Detail extends Component
 
     public function mount(Contract $contract)
     {
-        $this->contract = $contract;
+        // Kita paksa load relasi-relasi pentingnya di sini
+        $this->contract = $contract->load(['transaction', 'buyer', 'seller', 'product', 'file']);
     }
     public function approveContract()
     {

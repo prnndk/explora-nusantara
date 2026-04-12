@@ -24,10 +24,22 @@ class TransactionChat extends Component
     {
         $this->transaction = $transaction;
         $this->user_id = auth()->id();
-        $this->updateChats();
+        $this->transactionChats = TransactionChatModel::where('transaction_id', $this->transaction->id)
+            ->with('sender')
+            ->orderBy('created_at', 'asc')
+            ->get();
         $this->updateUnreadCount();
     }
 
+    // public function updateChats()
+    // {
+    //     $this->transactionChats = TransactionChatModel::where('transaction_id', $this->transaction->id)
+    //         ->with('sender')
+    //         ->orderBy('created_at', 'asc')
+    //         ->get();
+    //     $this->updateUnreadCount();
+    //     $this->dispatch('messageUpdated');
+    // }
     public function updateChats()
     {
         $this->transactionChats = TransactionChatModel::where('transaction_id', $this->transaction->id)
@@ -36,6 +48,7 @@ class TransactionChat extends Component
             ->get();
         $this->updateUnreadCount();
         $this->dispatch('messageUpdated');
+        $this->dispatch('newMessageReceived'); // ← tambah ini
     }
 
     private function updateUnreadCount()
@@ -108,9 +121,19 @@ class TransactionChat extends Component
         }
     }
 
+    public function markAsRead()
+    {
+        TransactionChatModel::where('transaction_id', $this->transaction->id)
+            ->where('sender_id', '!=', auth()->id())
+            ->where('read_status', false)
+            ->update(['read_status' => true]);
+
+        $this->updateUnreadCount();
+        $this->dispatch('chat-read');
+    }
+
     public function render()
     {
         return view('livewire.transaction-chat');
     }
-
 }

@@ -1,7 +1,7 @@
 <div class="flex flex-row gap-3 items-center">
 
     {{-- Detail Produk --}}
-    <a href="{{ route('seller.product.detail', $id) }}"
+    <!-- <a href="{{ route('seller.product.detail', $id) }}"
        class="relative flex items-center justify-center p-2 rounded-lg text-yellow-normal transition hover:bg-gray-100"
        x-data="{ showTooltip: false }"
        @mouseenter="showTooltip = true"
@@ -12,7 +12,7 @@
               class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg whitespace-nowrap">
             Detail Product
         </span>
-    </a>
+    </a> -->
 
     {{-- Edit Produk --}}
     <a href="{{ route('seller.product.detail', $id) }}"

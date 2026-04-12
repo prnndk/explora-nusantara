@@ -21,7 +21,12 @@ class UserProfile extends Component
     public function mount()
     {
 
-        $this->user = User::where('id', auth()->user()->id)->with(['seller', 'buyer'])->firstOrFail();
+        $this->user = User::where('id', auth()->user()->id)
+            ->with(['seller', 'buyer'])
+            ->firstOrFail();
+
+        $this->email = $this->user->email;
+
         if ($this->user->isAdmin()) {
             return;
         }
@@ -159,7 +164,9 @@ class UserProfile extends Component
         $fileId = File::where('file_path', $this->profile_picture)->firstOrFail()->id;
 
         if ($this->user->isBuyer()) {
+
             $deleteFile = File::where('id', $this->user->buyer->photo_file_id)->first();
+
             if ($deleteFile) {
                 //delete file from storage
                 $filePath = $deleteFile->file_path;
@@ -168,11 +175,14 @@ class UserProfile extends Component
                 }
                 $deleteFile->delete();
             }
+
             $this->user->buyer->update([
                 'photo_file_id' => $fileId,
             ]);
-        } else {
+        } elseif ($this->user->isSeller()) {
+
             $deleteFile = File::where('id', $this->user->seller->photo_file_id)->first();
+
             if ($deleteFile) {
                 $filePath = $deleteFile->file_path;
                 if (file_exists(storage_path('app/public/' . $filePath))) {
@@ -180,12 +190,35 @@ class UserProfile extends Component
                 }
                 $deleteFile->delete();
             }
+
             $this->user->seller->update([
                 'photo_file_id' => $fileId,
             ]);
+        } elseif ($this->user->isAdmin()) {
+
+            $deleteFile = File::where('id', $this->user->photo_file_id)->first();
+
+            if ($deleteFile) {
+                $filePath = $deleteFile->file_path;
+                if (file_exists(storage_path('app/public/' . $filePath))) {
+                    unlink(storage_path('app/public/' . $filePath));
+                }
+                $deleteFile->delete();
+            }
+
+            $this->user->update([
+                'photo_file_id' => $fileId,
+            ]);
+            $this->user->refresh();
         }
 
-        return $this->dispatch('toast', message: 'Fitur ini belum tersedia', data: ['position' => 'top-right', 'type' => 'info']);
+        $this->dispatch('close-modal', 'update-profile');
+
+        return $this->dispatch(
+            'toast',
+            message: 'Berhasil update foto profil',
+            data: ['position' => 'top-right', 'type' => 'success']
+        );
     }
 
     public function save()
@@ -282,6 +315,8 @@ class UserProfile extends Component
 
     public function render()
     {
+        $this->user = $this->user->fresh(['buyer', 'seller']);
+
         return view('livewire.user-profile');
     }
 }

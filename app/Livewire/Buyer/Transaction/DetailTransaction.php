@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Buyer\Transaction;
 
-use App\Enums\ProductStatus;
 use App\Models\Contract;
+use App\Services\ContractService;
 use App\Models\File;
 use App\Models\Transaction;
 use Exception;
@@ -61,43 +61,27 @@ class DetailTransaction extends Component
     }
 
     public function updateContractDocument()
-    {
-        try {
-            $this->validate([
-                'contract_document' => 'required|exists:files,file_path'
-            ]);
+{
+    try {
+        $this->validate([
+            'contract_document' => 'required|exists:files,file_path'
+        ]);
 
-            $file = File::where('file_path', $this->contract_document)->first();
-            if (!$file) {
-                throw new Exception('File not found');
-            }
+        app(ContractService::class)->updateContractDocument(
+            $this->transaction,
+            $this->contract_document
+        );
 
-            $contract = $this->transaction->contract;
-            if (!$contract) {
-                throw new Exception('Contract not found for this transaction');
-            }
+        $this->contract_document = null;
+        $this->dispatch('filepondReset', 'contract_document');
+        $this->dispatch('close-modal', 'update-contract');
 
-            //delete old file if exists
-            $old_contract_file = $contract->file->id;
+        return $this->dispatch('toast', message: 'Berhasil update dokumen contract', data: ['type' => 'success']);
 
-
-            $contract->file_id = $file->id;
-            $contract->status = ProductStatus::NEW_REQUEST;
-            $contract->save();
-
-            File::destroy($old_contract_file);
-
-            $this->contract_document = null;
-            //filepond reset
-            $this->dispatch('filepondReset', 'contract_document');
-            $this->dispatch('close-modal', 'update-contract');
-
-            return $this->dispatch('toast', message: 'Berhasil update dokumen contract', data: ['position' => 'top-right', 'type' => 'success']);
-        } catch (Exception $exception) {
-            return $this->dispatch('toast', message: 'Terjadi kesalahan: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'error']);
-        }
-
+    } catch (\Exception $e) {
+        return $this->dispatch('toast', message: $e->getMessage(), data: ['type' => 'error']);
     }
+}
 
     public function render()
     {

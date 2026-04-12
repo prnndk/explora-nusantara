@@ -16,7 +16,7 @@
                 <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Product
                     Description</label>
                 <textarea type="text" placeholder="Type your message here." wire:model="description" readonly
-                    class="flex w-full h-auto min-h-[80px] px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"></textarea>
+                    class="flex w-full h-auto min-h-[150px] px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"></textarea>
             </div>
             <x-input.text label="Price" name="price" type="number" :transparent="false" wire:model="price"
                 :required="true" />
@@ -29,13 +29,22 @@
         </div>
         <div class="flex flex-col space-y-3 gap-4">
             <div class="space-y-6 mt-3 mb-8">
-                <h6 class="my-2">Gambar Produk</h6>
+                <!-- <h6 class="my-2">Gambar Produk</h6> -->
+                 <h6 class="mt-4 text-sm text-gray-500">Gallery</h6>
                 @if ($product->file)
-                    <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
-                        class="max-w-full h-64 object-cover rounded-md shadow-md">
+                <img src="/view-file/{{ $product->file->id }}" alt="Card Image"
+                    class="max-w-full h-64 object-cover rounded-md shadow-md">
                 @else
-                    <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image"
-                        class="max-w-full h-64 object-cover rounded-md shadow-md">
+                <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Card Image"
+                    class="max-w-full h-64 object-cover rounded-md shadow-md">
+                @endif
+                @if ($product->images && $product->images->count())
+                <div class="grid grid-cols-3 gap-3 mt-4">
+                    @foreach ($product->images as $img)
+                    <img src="{{ asset('storage/' . $img->image_path) }}"
+                        class="w-full h-24 object-cover rounded-lg border">
+                    @endforeach
+                </div>
                 @endif
             </div>
         </div>

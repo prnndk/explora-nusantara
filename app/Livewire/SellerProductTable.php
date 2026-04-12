@@ -21,6 +21,7 @@ class SellerProductTable extends DataTableComponent
     public function builder(): Builder
     {
         return Product::query()
+            ->select('products.category_id')
             ->where('seller_id', auth()->user()->seller->id)
             ->whereIn('status', ['new_request', 'approved', 'rejected', 'pending'])
             ->orderBy('created_at', 'desc');
@@ -44,6 +45,8 @@ class SellerProductTable extends DataTableComponent
         return [
             IncrementColumn::make('#'),
             Column::make("Product", "nama")->searchable(),
+            Column::make("Category")
+                ->label(fn($row) => $row->category?->name ?? '-'),
             Column::make('Description', 'deskripsi')
                 ->format(function ($value) {
                     return \Illuminate\Support\Str::limit($value, 30);

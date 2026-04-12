@@ -35,9 +35,16 @@ class Contract extends Model
     {
         return $this->belongsTo(File::class, 'file_id');
     }
-
+    
     public function transaction(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class, 'transaction_id');
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+    public function getContractCode()
+    {
+        $base = strtoupper(substr(str_replace('-', '', $this->id), 0, 6));
+        $time = $this->created_at ? $this->created_at->format('Hi') : '0000';
+
+        return "CTR-{$base}-{$time}";
     }
 }

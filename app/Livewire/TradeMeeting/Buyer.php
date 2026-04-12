@@ -62,6 +62,7 @@ class Buyer extends DataTableComponent
                             : '';
                         return view('components.table.seller-meeting-table-action', [
                             'zoom_meeting_id' => $row->status === ProductStatus::REJECTED ? '' : $zoom_meeting_url,
+                            'status' => $row->status,
                         ]);
                     }
                 ),

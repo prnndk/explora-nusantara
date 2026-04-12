@@ -16,6 +16,7 @@ class ContractTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+        $this->setSortingPillsDisabled();
     }
 
     public function approveContract($id)
@@ -42,29 +43,35 @@ class ContractTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            IncrementColumn::make('#'),
-            Column::make('Product', 'product.nama')
-                ->format(
-                    fn($value, $row, Column $column) => Str::limit($value, 50, '...')
-                )
+            Column::make('Trans. Code', 'transaction_id')
+                ->format(function ($value, $row, Column $column) {
+                    if (!$row->transaction && $row->transaction_id) {
+                        $row->load('transaction');
+                    }
+                    return $row->transaction ? $row->transaction->getInvoiceCode() : '-';
+                })
                 ->searchable()
                 ->sortable(),
+                
+            Column::make('Product', 'product.nama')
+                ->format(fn($value, $row, Column $column) => Str::limit($value, 50, '...'))
+                ->searchable()
+                ->sortable(),
+
             Column::make('Buyer', 'buyer.name'),
             Column::make('Supplier', 'seller.name'),
-            Column::make('Status', 'status')
-                ->format(
-                    fn($value, $row, Column $column) => view('components.table.product-table-badge', [
-                        'status' => $value,
-                    ])
-                )
-                ->sortable(),
-            Column::make('Actions', 'id')
-                ->format(
-                    fn($value, $row, Column $column) => view('components.table.admin-contract-action', [
-                        'id' => $value,
-                    ])
-                ),
 
+            Column::make('Status', 'status')
+                ->format(fn($value, $row, Column $column) => view('components.table.product-table-badge', ['status' => $value]))
+                ->sortable(),
+
+            Column::make('Actions', 'id')
+                ->format(fn($value, $row, Column $column) => view('components.table.admin-contract-action', ['id' => $value])),
         ];
+    }
+    public function builder(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Contract::query()
+            ->with(['transaction', 'product', 'buyer', 'seller']); // Eager load relasi
     }
 }

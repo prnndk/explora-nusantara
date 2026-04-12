@@ -29,6 +29,7 @@ class User extends Authenticatable
         'register_status',
         'role',
         'password',
+        'photo_file_id',
     ];
 
     /**
@@ -113,5 +114,9 @@ class User extends Authenticatable
             ->where('read_status', false)
             ->count();
         return $chats;
+    }
+    public function photoFile()
+    {
+        return $this->belongsTo(File::class, 'photo_file_id', 'id');
     }
 }

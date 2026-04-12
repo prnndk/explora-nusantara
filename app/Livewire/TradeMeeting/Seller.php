@@ -128,7 +128,8 @@ class Seller extends DataTableComponent
                             ? $zoom_meeting_data['data']['join_url']
                             : '';
                         return view('components.table.seller-meeting-table-action', [
-                            'zoom_meeting_id' => $row->status === ProductStatus::REJECTED ? '' : $zoom_meeting_url,
+                            'zoom_meeting_id' => $row->status === ProductStatus::APPROVED ? $zoom_meeting_url : '',
+                             'status' => $row->status,
                         ]);
                     }
                 ),

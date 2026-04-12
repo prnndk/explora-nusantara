@@ -16,31 +16,34 @@ class BuyerTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+        $this->setRefreshTime(10000);
     }
 
     public function builder(): Builder
     {
         return Transaction::query()
-            ->where('buyer_id', auth()->user()->buyer->id)
-            ->with([
-                'product',
-                'seller',
-                'chat' => function ($query) {
-                    $query->where(function ($subQuery) {
-                        $subQuery->where('sender_id', '!=', auth()->id());
-                    })->where('read_status', false)->count();
-                },
+            ->where('transactions.buyer_id', auth()->user()->buyer->id)
+            ->with(['product', 'seller'])
+            ->withCount([
+                'chat as chat_count' => function ($query) {
+                    $query->where('sender_id', '!=', auth()->id())
+                        ->where('read_status', false);
+                }
             ])
-            ->withCount('chat')
             ->orderBy('transactions.created_at', 'desc');
     }
 
     public function cancelTransaction($id)
     {
-        $transaction = Transaction::where('id', $id)
-            ->firstOrFail();
-        try {
+        $transaction = Transaction::where('id', $id)->firstOrFail();
 
+        // Tambahkan pengecekan status di sini
+        if ($transaction->status === TransactionStatus::DONE) {
+            $this->dispatch('toast', message: 'Transaksi yang sudah selesai tidak dapat dibatalkan', data: ['position' => 'top-center', 'type' => 'warning']);
+            return;
+        }
+
+        try {
             if ($transaction) {
                 $transaction->update([
                     'status' => TransactionStatus::CANCELED
@@ -50,14 +53,20 @@ class BuyerTable extends DataTableComponent
             $this->dispatch('toast', message: 'Gagal mengupdate status', data: ['position' => 'top-center', 'type' => 'error']);
             return;
         }
-        $this->dispatch('toast', message: 'Berhasil mengupdate status', data: ['position' => 'top-center', 'type' => 'success']);
+
+        $this->dispatch('toast', message: 'Berhasil membatalkan transaksi', data: ['position' => 'top-center', 'type' => 'success']);
         $this->dispatch('refreshDataTable');
     }
 
     public function columns(): array
     {
         return [
-            IncrementColumn::make('#'),
+            Column::make('Trans. Code', 'id')
+                ->format(function ($value, $row, Column $column) {
+                    return $row->getInvoiceCode();
+                })
+                ->searchable()
+                ->sortable(),
             Column::make("Product", "product.name")
                 ->label(fn($row, Column $column) => view('components.table.transaction.name-with-chat-count')->withRow($row))
                 ->sortable()
@@ -79,6 +88,7 @@ class BuyerTable extends DataTableComponent
             Column::make("Actions", 'id')->format(
                 fn($value, $row, Column $column) => view('components.table.transaction.buyer-action', [
                     'id' => $value,
+                    'row' => $row,
                 ])
             )
         ];

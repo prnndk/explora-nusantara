@@ -1,11 +1,11 @@
+{{-- sidebar-item.blade.php --}}
 @props([
     'route' => '#',
     'icon' => 'heroicon-o-chat-bubble-left-right',
     'title' => 'Chat',
     'active' => false,
     'chatCount' => 0,
-    // kita tidak perlu definisikan sidebarOpenStatus sebagai prop,
-    // karena kita harapkan Alpine akan menyediakan variabel itu di context komponen ini
+    'isSubmenu' => false,  {{-- ← tambah default biar tidak error --}}
 ])
 
 <li>
@@ -34,9 +34,7 @@
         >
             {{ $title }}
             @if($chatCount > 0)
-                <span
-                    class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"
-                >
+                <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
                     {{ $chatCount }}
                 </span>
             @endif

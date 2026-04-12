@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="handleCreation">
+    <form wire:submit.prevent="handleCreation" enctype="multipart/form-data">
         <div class="flex flex row gap-6 my-6">
             <a href="{{route('seller.product.index')}}" wire:navigate>
                 <x-button type="danger" class="py-3 px-8 rounded-lg" button="button">Cancel</x-button>
@@ -10,23 +10,81 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-4 w-full">
             <div class="flex flex-col space-y-3 gap-4">
                 <x-input.text label="Product Name" name="product_name"
-                              :transparent="false" wire:model="name" :required="true"/>
+                    :transparent="false" wire:model="name" :required="true" />
+                <!-- CATEGORY -->
+                <div class="flex flex-col space-y-2">
+                    <label class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                        Category
+                    </label>
+
+                    <select wire:model="category_id"
+                        class="flex w-full px-3 py-2 text-sm bg-white border rounded-md border-neutral-300">
+                        <option value="">Select Category</option>
+
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">
+                            {{ $category->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="flex flex-col space-y-2">
                     <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Product
                         Description</label>
                     <textarea type="text" placeholder="Type your message here."
-                              wire:model="description"
-                              class="flex w-full h-auto min-h-[80px] px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"></textarea>
+                        wire:model="description"
+                        class="flex w-full h-auto min-h-[80px] px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"></textarea>
                 </div>
                 <x-input.text label="Price" name="price" type="number"
-                              :transparent="false" wire:model="price" :required="true"/>
+                    :transparent="false" wire:model="price" :required="true" />
                 <x-input.text label="Stock" name="stock"
-                              :transparent="false" wire:model="stock" :required="true" type="number"/>
+                    :transparent="false" wire:model="stock" :required="true" type="number" />
             </div>
             <div class="flex flex-col space-y-3 gap-4">
-                <livewire:input.file-upload name="foto_file_id"
-                                            label="Upload Gambar" user_id="{{ auth()->user()->id }}"
-                                            wire:model="foto_file_id" :required="true" :transparent="false"/>
+                <!-- Cover Image -->
+                <livewire:input.file-upload
+                    name="foto_file_id"
+                    label="Upload Gambar Utama"
+                    user_id="{{ auth()->user()->id }}"
+                    wire:model="foto_file_id"
+                    :required="true"
+                    :transparent="false" />
+                <!-- Multiple Images -->
+                <div class="flex flex-col gap-3">
+
+                    <label class="text-sm font-medium">
+                        Product Gallery (Max 5 images)
+                    </label>
+
+                    <!-- Upload Box -->
+                    <label class="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50">
+                        <div class="flex flex-col items-center gap-2 text-gray-500">
+                            <span class="text-sm">Klik atau drop gambar disini</span>
+                            <span class="text-xs">(Max 5 images)</span>
+                        </div>
+                        <input type="file" wire:model="images" multiple class="hidden">
+                    </label>
+
+                    <!-- Loading -->
+                    <div wire:loading wire:target="images" class="text-sm text-gray-500">
+                        Uploading...
+                    </div>
+
+                    <!-- Preview -->
+                    @if ($images)
+                    <div class="grid grid-cols-3 gap-3 mt-2">
+                        @foreach ($images as $image)
+                        <div class="relative">
+                            <img src="{{ $image->temporaryUrl() }}"
+                                class="w-full h-24 object-cover rounded-lg border">
+
+                            <!-- Optional delete (kalau mau nanti) -->
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+
+                </div>
             </div>
         </div>
     </form>

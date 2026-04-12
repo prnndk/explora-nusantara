@@ -16,22 +16,20 @@ class SellerTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+        $this->setRefreshTime(10000);
     }
 
     public function builder(): Builder
     {
         return Transaction::query()
             ->where('transactions.seller_id', auth()->user()->seller->id)
-            ->with([
-                'product',
-                'chat' => function ($query) {
-                    $query->where(function ($subQuery) {
-                        $subQuery->where('sender_id', '!=', auth()->id());
-                    })->where('read_status', false)->count();
-                },
-                'buyer',
+            ->with(['product', 'buyer'])
+            ->withCount([
+                'chat as chat_count' => function ($query) {
+                    $query->where('sender_id', '!=', auth()->id())
+                        ->where('read_status', false);
+                }
             ])
-            ->withCount('chat')
             ->orderBy('transactions.created_at', 'desc');
     }
 
@@ -81,7 +79,12 @@ class SellerTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            IncrementColumn::make('#'),
+            Column::make('Trans. Code', 'id')
+                ->format(function ($value, $row, Column $column) {
+                    return $row->getInvoiceCode();
+                })
+                ->searchable()
+                ->sortable(),
             Column::make("Product", "product.name")
                 ->label(fn($row, Column $column) => view('components.table.transaction.name-with-chat-count')->withRow($row))
                 ->sortable()
@@ -103,6 +106,7 @@ class SellerTable extends DataTableComponent
             Column::make("Actions", 'id')->format(
                 fn($value, $row, Column $column) => view('components.table.transaction.seller-action', [
                     'id' => $value,
+                    'row' => $row,
                 ])
             )
         ];

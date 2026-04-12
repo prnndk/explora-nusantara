@@ -25,7 +25,13 @@ class Edit extends Component
         $this->product->update([
             'status' => ProductStatus::APPROVED,
         ]);
-        return $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
+
+        $this->dispatch('toast', message: 'Produk berhasil di-approve', data: [
+            'position' => 'top-center',
+            'type' => 'success'
+        ]);
+
+        return redirect()->route('admin.product.index');
     }
 
     public function rejectTransaction()
@@ -33,7 +39,13 @@ class Edit extends Component
         $this->product->update([
             'status' => ProductStatus::REJECTED,
         ]);
-        return $this->dispatch('toast', message: 'Berhasil Mengupdate Produk', data: ['position' => 'top-center', 'type' => 'success']);
+
+        $this->dispatch('toast', message: 'Produk berhasil di-reject', data: [
+            'position' => 'top-center',
+            'type' => 'success'
+        ]);
+
+        return redirect()->route('admin.product.index');
     }
 
     public function render()

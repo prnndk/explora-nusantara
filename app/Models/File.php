@@ -50,7 +50,12 @@ class File extends Model
         return $this->hasOne(Buyer::class, 'legality_letter_file_id', 'id');
     }
 
-    public function product(): HasMany{
+    public function product(): HasMany
+    {
         return $this->hasMany(Product::class, 'foto_file_id', 'id');
+    }
+    public function userPhoto(): HasOne
+    {
+        return $this->hasOne(User::class, 'photo_file_id', 'id');
     }
 }

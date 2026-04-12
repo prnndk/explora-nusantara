@@ -77,7 +77,19 @@
                             addClasses="px-4 h-10 whitespace-nowrap w-full">Change</x-button>
                     </div>
                 </div>
-                <x-input.select label="Bank" name="bank" />
+                <x-input.select label="Bank" name="bank">
+                    <option value="">Select Bank</option>
+                    <option value="BCA">BCA</option>
+                    <option value="BRI">BRI</option>
+                    <option value="BNI">BNI</option>
+                    <option value="Mandiri">Mandiri</option>
+                    <option value="CIMB Niaga">CIMB Niaga</option>
+                    <option value="BTN">BTN</option>
+                    <option value="BSI">BSI</option>
+                    <option value="Permata">Permata</option>
+                    <option value="Danamon">Danamon</option>
+                    <option value="OCBC">OCBC</option>
+                </x-input.select>
                 <x-input.text label="Bank Account Number" name="bank_account_number" value="xxxxxxxx"
                     :required="true" />
             </div>

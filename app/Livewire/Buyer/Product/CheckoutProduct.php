@@ -54,7 +54,8 @@ class CheckoutProduct extends Component
         $this->product = $product;
         $this->user = Auth::user();
         $this->reloadAlamat();
-        $this->totalPrice = $product->harga;
+        $this->quantity = 12;
+        $this->totalPrice = $this->product->harga * $this->quantity;
         $this->shippingCost = $this->ongkir['economic'];
         $this->totaled = $this->shippingCost + 5000 + 20000;
     }
@@ -92,10 +93,14 @@ class CheckoutProduct extends Component
 
             $transaction->save();
             DB::commit();
+            // } catch (ValidationException $exception) {
+            //     DB::rollBack();
+            //     $this->setErrorBag($exception->validator->errors());
+            //     $this->dispatch('toast', message: 'Error: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
+            //     return;
         } catch (ValidationException $exception) {
             DB::rollBack();
             $this->setErrorBag($exception->validator->errors());
-            $this->dispatch('toast', message: 'Error: ' . $exception->getMessage(), data: ['position' => 'top-right', 'type' => 'danger']);
             return;
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -106,6 +111,7 @@ class CheckoutProduct extends Component
         $this->dispatch('toast', message: 'Checkout successful', data: ['position' => 'top-center', 'type' => 'success']);
 
         return $this->redirect("/dashboard/buyer/product/checkout-success", navigate: true);
+        //return redirect()->route('buyer.orders.index');
     }
 
     public function updateAddress()
@@ -124,7 +130,7 @@ class CheckoutProduct extends Component
         $this->reloadAlamat();
 
         $this->dispatch('toast', message: 'Address updated', data: ['position' => 'top-center', 'type' => 'info']);
-        $this->dispatch('close-modal', 'change-address');
+        $this->dispatch('close-modal', 'add-new-address');
     }
 
     public function selectAddress($alamatId)

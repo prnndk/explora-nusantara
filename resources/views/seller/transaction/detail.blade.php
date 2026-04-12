@@ -4,7 +4,7 @@
             <x-heroicon-o-arrow-left-circle class="size-8" />
         </a>
         <div>
-            <h1 class="text-4xl font-bold">Transaction#{{ $transaction->id }}</h1>
+            <h1 class="text-4xl font-bold">Transaction#{{ $transaction->getInvoiceCode() }}</h1>
             <div class="flex flex-row gap-6 items-center mt-4">
                 <p>Duration</p>
                 <x-table.transaction-badge :status="$transaction->status" />

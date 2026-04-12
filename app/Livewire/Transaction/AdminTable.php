@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Transaction;
+use App\Models\Contract;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
 use Str;
 
@@ -66,9 +67,11 @@ class AdminTable extends DataTableComponent
                 )
                 ->searchable()
                 ->sortable(),
-            Column::make("Contract")
-                ->label(function () {
-                    return '#AD123328';
+            Column::make("Contract", "id")
+                ->format(function ($value, $row) {
+                    return $row->contract
+                        ? $row->contract->getContractCode()
+                        : '-';
                 })
                 ->sortable(),
             Column::make("Buyer", "buyer.company_name"),
@@ -84,8 +87,15 @@ class AdminTable extends DataTableComponent
             Column::make("Actions", 'id')->format(
                 fn($value, $row, Column $column) => view('components.table.transaction.admin-action', [
                     'id' => $value,
+                    'row' => $row,
                 ])
             )
         ];
+    }
+    public function builder(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Transaction::query()
+            ->select('transactions.*') // WAJIB ADA
+            ->with(['product', 'buyer', 'seller']);
     }
 }

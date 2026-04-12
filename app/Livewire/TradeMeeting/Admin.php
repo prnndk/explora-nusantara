@@ -92,9 +92,10 @@ class Admin extends DataTableComponent
                             ]);
                         }
 
-                        return view('components.table.admin-meeting-action', [
+                       return view('components.table.admin-meeting-action', [
                             'zoom_meeting_id' => $zoom_meeting_url,
                             'id' => $value,
+                            'status' => $row->status,
                         ]);
                     }
                 ),

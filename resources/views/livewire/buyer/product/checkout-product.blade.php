@@ -18,17 +18,20 @@
                     <div class="flex flex-col items-start gap-2 mt-2">
                         <h3 class="text-gray-500 font-semibold uppercase text-sm">Alamat Pengiriman</h3>
                         @if ($shipping_address_name || $shipping_address)
-                            <div class="flex flex-col gap-3">
-                                <div class="flex flex-row gap-3 items-center">
-                                    <x-heroicon-s-map-pin class="size-6 text-mainGreen" />
-                                    <p class="font-semibold">{{ $shipping_address_name ?? 'No name specified' }}</p>
-                                </div>
-                                <p class="text-gray-700">{{ $shipping_address ?? 'No address specified' }}</p>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex flex-row gap-3 items-center">
+                                <x-heroicon-s-map-pin class="size-6 text-mainGreen" />
+                                <p class="font-semibold">{{ $shipping_address_name ?? 'No name specified' }}</p>
                             </div>
+                            <p class="text-gray-700">{{ $shipping_address ?? 'No address specified' }}</p>
+                        </div>
                         @else
-                            <div class="flex flex-col gap-3">
-                                <p class="text-gray-500 italic">Please add a shipping address</p>
-                            </div>
+                        @error('shipping_address')
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                        <div class="flex flex-col gap-3">
+                            <p class="text-gray-500 italic">Please add a shipping address</p>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -40,11 +43,11 @@
             </div>
             <div class="bg-gray-100 rounded-xl p-4 flex gap-4">
                 @if ($product->file)
-                    <img src="/view-file/{{ $product->file->id }}" alt="Product Image"
-                        class="w-24 h-24 rounded-lg object-cover" />
+                <img src="/view-file/{{ $product->file->id }}" alt="Product Image"
+                    class="w-24 h-24 rounded-lg object-cover" />
                 @else
-                    <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Product Image"
-                        class="w-24 h-24 rounded-lg object-cover" />
+                <img src="{{ asset('images/mountain-placeholder.jpg') }}" alt="Product Image"
+                    class="w-24 h-24 rounded-lg object-cover" />
                 @endif
                 <div class="flex-1">
                     <div class="flex justify-between items-start">
@@ -56,26 +59,27 @@
                                 <p class="text-gray-700">{{ $product->seller->company_name }}</p>
                             </div>
                         </div>
-                        <div class="flex flex-col items-center gap-2" x-data="{ quantity: @this.quantity, harga: {{ $product->harga }} }">
-                            <p class="font-semibold text-gray-900">
-                                {{ 'Rp' . number_format($product->harga, 0, ',', '.') }}
-                            </p>
 
+                        <div class="flex flex-col items-center gap-2"
+                            x-data="{ quantity: @entangle('quantity'), minOrder: 12, harga: {{ $product->harga }} }">
                             <div class="flex justify-center">
-                                <div class="flex items-center gap-2 px-2 py-1">
+                                <div class="flex items-center gap-1 bg-white border border-gray-300 rounded-lg p-1">
                                     <button type="button"
-                                        @click="if(quantity > 1) { quantity--; @this.quantity = quantity ; @this.totalPrice = quantity * harga}"
-                                        class="text-gray-500 transition hover:text-red-600" :disabled="quantity <= 1"
-                                        :class="{ 'opacity-50 cursor-not-allowed': quantity <= 1 }">
-                                        <x-heroicon-o-minus-circle class="w-7 h-7" />
+                                        @click="if(quantity > minOrder) { quantity--; $wire.set('quantity', quantity); }"
+                                        class="p-1 text-gray-500 hover:text-red-600 transition disabled:opacity-50"
+                                        :disabled="quantity <= minOrder">
+                                        <x-heroicon-o-minus class="w-5 h-5" />
                                     </button>
 
-                                    <span class="px-4 text-center" x-text="quantity"></span>
+                                    <input type="number"
+                                        x-model.number="quantity"
+                                        @blur="if(quantity < minOrder) quantity = minOrder; $wire.set('quantity', quantity)"
+                                        class="w-12 text-center border-none focus:ring-0 p-0 text-sm font-semibold" />
 
                                     <button type="button"
-                                        x-on:click="quantity++; @this.quantity = quantity ; @this.totalPrice = quantity * harga"
-                                        class="text-gray-500 transition hover:text-green-600">
-                                        <x-heroicon-o-plus-circle class="w-7 h-7" />
+                                        @click="quantity++; $wire.set('quantity', quantity);"
+                                        class="p-1 text-gray-500 hover:text-green-600 transition">
+                                        <x-heroicon-o-plus class="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
@@ -154,64 +158,68 @@
                 </div>
             </div>
         </div>
-        <div class="bg-gray-100 rounded-xl p-4 flex flex-col">
-            <div x-data="{ showAll: false }" class="mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-gray-500 font-semibold uppercase text-sm">Payment Method</h3>
-                    <h6 class="text-mainGreen cursor-pointer hover:underline" @click="showAll = !showAll"
-                        x-text="showAll ? 'Show less' : 'See all'"></h6>
-                </div>
-
-                <div class="space-y-3">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg"
-                            alt="Mandiri" class="w-8 h-8" />
-                        <span class="text-gray-700">Mandiri Virtual Account</span>
-                        <input type="radio" name="payment" class="ml-auto" value="MANDIRI"
-                            wire:model="payment_method" />
-                    </label>
-
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
-                            alt="BCA" class="w-8 h-8" />
-                        <span class="text-gray-700">BCA Virtual Account</span>
-                        <input type="radio" name="payment" class="ml-auto" value="BCA"
-                            wire:model="payment_method" />
-                    </label>
-
-                    <div x-show="showAll" x-transition>
-                        <label class="flex items-center gap-3 cursor-pointer mt-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" alt="BNI"
-                                class="w-8 h-8" />
-                            <span class="text-gray-700">BNI Virtual Account</span>
-                            <input type="radio" name="payment" class="ml-auto" value="BNI"
-                                wire:model="payment_method" />
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-100 rounded-xl p-6 flex flex-col gap-6">
+                <div x-data="{ showAll: false }">
+                    <h3 class="text-gray-500 font-semibold uppercase text-sm mb-4">Payment Method</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-mainGreen transition">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri" class="w-8 h-8" />
+                            <span class="text-gray-700 font-medium">Mandiri Virtual Account</span>
+                            <input type="radio" name="payment" class="ml-auto" value="MANDIRI" wire:model="payment_method" />
                         </label>
 
-                        <label class="flex items-center gap-3 cursor-pointer mt-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg"
-                                alt="BRI" class="w-8 h-8" />
-                            <span class="text-gray-700">BRI Virtual Account</span>
-                            <input type="radio" name="payment" class="ml-auto" value="BRI"
-                                wire:model="payment_method" />
-                        </label>
+                        <div x-show="showAll" x-transition class="space-y-3">
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-mainGreen transition">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" alt="BNI" class="w-8 h-8" />
+                                <span class="text-gray-700 font-medium">BNI Virtual Account</span>
+                                <input type="radio" name="payment" class="ml-auto" value="BNI" wire:model="payment_method" />
+                            </label>
+                        </div>
+                        <div x-show="showAll" x-transition class="space-y-3">
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-mainGreen transition">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
+                                    alt="BCA" class="w-8 h-8" />
+                                <span class="text-gray-700">BCA Virtual Account</span>
+                                <input type="radio" name="payment" class="ml-auto" value="BCA"
+                                    wire:model="payment_method" />
+                            </label>
+                        </div>
+                        <div x-show="showAll" x-transition class="space-y-3">
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-mainGreen transition">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg"
+                                    alt="BRI" class="w-8 h-8" />
+                                <span class="text-gray-700">BRI Virtual Account</span>
+                                <input type="radio" name="payment" class="ml-auto" value="BRI"
+                                    wire:model="payment_method" />
+                            </label>
+                        </div>
 
+                        <button type="button" @click="showAll = !showAll"
+                            class="w-full py-2 text-sm text-gray-500 flex items-center justify-center gap-1 hover:text-mainGreen transition-colors">
+                            <span x-text="showAll ? 'Show Less' : 'See Other Payment Methods'"></span>
+                            <x-heroicon-s-chevron-down
+                                class="size-4 transition-transform duration-300"
+                                x-bind:class="showAll ? 'rotate-180' : ''" />
+                        </button>
+                        @error('payment_method')
+                        <span class="text-xs text-red-500 block mt-2">Please select the payment method first.</span>
+                        @enderror
                     </div>
                 </div>
             </div>
 
-            <div class="mb-6">
-                <h4 class="text-gray-500 font-semibold uppercase text-sm mb-3">Detail</h4>
-                <div class="space-y-2 text-gray-700">
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                <h3 class="text-gray-800 font-bold mb-4 text-lg">Shopping Summary</h3>
+
+                <div class="space-y-3 text-gray-700 text-sm">
                     <div class="flex justify-between">
                         <span x-text="'Total Price ('+@this.quantity+' Product)'"></span>
-                        <span
-                            x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(@this.totalPrice)"></span>
+                        <span x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(@this.totalPrice)"></span>
                     </div>
                     <div class="flex justify-between">
                         <span>Total shipping costs</span>
-                        <span
-                            x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(@this.shippingCost || 20000)"></span>
+                        <span x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(@this.shippingCost || 20000)"></span>
                     </div>
                     <div class="flex justify-between">
                         <span>Total shipping insurance</span>
@@ -221,85 +229,62 @@
                         <span>Application service charge</span>
                         <span>Rp5.000</span>
                     </div>
-                </div>
-            </div>
 
-            <div class="border-t border-gray-300 pt-4 mb-4">
-                <div class="flex justify-between items-center font-semibold">
-                    <span>Total</span>
-                    <span class="text-gray-900"
-                        x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Number(@this.totaled) + Number(@this.totalPrice) + Number(@this.shippingCost))"></span>
-                </div>
-            </div>
-            <button class="bg-ecstasy-500 text-white mt-4 w-full py-3 rounded-lg hover:bg-ecstasy-600"
-                wire:click="checkout">Pay Now!</button>
-        </div>
-    </div>
-    <x-modal name="change-address" :show="false" title="Change Address" :withIcon="false">
-        <div class="p-3 flex flex-col gap-4">
-            <div x-data="{ open: false, selected: '{{ $shipping_address_name }}' }">
-                <button @click="open = !open" type="button"
-                    class="relative w-full rounded-lg border border-gray-300 bg-white p-4 flex justify-between items-center">
-                    <div class="flex items-start gap-3">
-                        <x-heroicon-s-map-pin class="size-5 text-mainGreen flex-shrink-0 mt-1" />
-                        <div>
-                            <h5 class="font-medium">{{ $shipping_address_name ?? 'No address selected' }}</h5>
-                            <p class="text-sm text-gray-600">
-                                {{ $shipping_address ?? 'Please add a shipping address' }}</p>
+                    <div class="border-t border-gray-200 pt-4 mt-2">
+                        <div class="flex justify-between items-center font-bold text-base">
+                            <span class="text-gray-900">Total Bill</span>
+                            <span class="text-ecstasy-500 text-lg"
+                                x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Number(@this.totaled) + Number(@this.totalPrice) + Number(@this.shippingCost))"></span>
                         </div>
                     </div>
-                    <x-heroicon-s-chevron-down class="size-5 text-gray-500" ::class="{ 'rotate-180': open }" />
-                </button>
-
-                <div x-show="open" @click.away="open = false"
-                    class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    @if (count($user_alamat) > 0)
-                        @php $hasAvailableAddress = false; @endphp
-                        @foreach ($user_alamat as $alamat)
-                            @if ($shipping_address != $alamat->alamat)
-                                @php $hasAvailableAddress = true; @endphp
-                                <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
-                                    @click="selected = '{{ $alamat->nama }}'; open = false; $wire.selectAddress('{{ $alamat->id }}')">
-                                    <div class="flex items-start gap-3">
-                                        <x-heroicon-s-map-pin class="size-5 text-mainGreen flex-shrink-0 mt-1" />
-                                        <div>
-                                            <h5 class="font-medium">{{ $alamat->nama }}</h5>
-                                            <p class="text-sm text-gray-600">{{ $alamat->alamat }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-
-                        @if (!$hasAvailableAddress)
-                            <div class="p-4 text-center text-gray-500 italic">
-                                No other addresses available
-                            </div>
-                        @endif
-                    @else
-                        <div class="p-4 text-center text-gray-500 italic">
-                            No saved addresses found
-                        </div>
-                    @endif
                 </div>
-            </div>
 
-            <div class="flex flex-col gap-2">
-                <x-input.text label="Shipping Address Name" :required="true" name="shipping_address_name_input"
-                    :transparent="false" wire:model="shipping_address_name_input" />
-                <x-input.text label="Shipping Address" :required="true" name="shipping_address_input"
-                    :transparent="false" wire:model="shipping_address_input" />
-                <p class="text-sm text-gray-500">Please enter your address for shipping. If u want to add new</p>
-            </div>
-
-            <div class="flex justify-end gap-2">
-                <x-button type="outline-neutral" @click="$dispatch('close-modal', 'change-address')">
-                    Cancel
-                </x-button>
-                <x-button type="primary" wire:click="updateAddress" wire:loading.attr="disabled">
-                    Save New Address
-                </x-button>
+                <button class="bg-ecstasy-500 text-white mt-6 w-full py-3 rounded-xl font-bold hover:bg-ecstasy-600 transition shadow-lg shadow-ecstasy-100"
+                    wire:click="checkout">
+                    Pay Now!
+                </button>
             </div>
         </div>
-    </x-modal>
-</div>
+
+        <x-modal name="change-address" :show="false" title="Select Shipping Address" :withIcon="false">
+            <div class="p-4 flex flex-col gap-4">
+                <div class="space-y-3 max-h-80 overflow-y-auto">
+                    @foreach ($user_alamat as $alamat)
+                    <div class="p-4 border rounded-xl cursor-pointer hover:border-mainGreen transition {{ $shipping_address == $alamat->alamat ? 'border-mainGreen bg-green-50' : 'border-gray-200' }}"
+                        @click="$wire.selectAddress('{{ $alamat->id }}'); $dispatch('close-modal', 'change-address')">
+                        <div class="flex items-start gap-3">
+                            <x-heroicon-s-map-pin class="size-5 text-mainGreen mt-1" />
+                            <div>
+                                <h5 class="font-bold">{{ $alamat->nama }}</h5>
+                                <p class="text-sm text-gray-600">{{ $alamat->alamat }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <button @click="$dispatch('close-modal', 'change-address'); setTimeout(() => $dispatch('open-modal', 'add-new-address'), 100)"
+                    class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-mainGreen hover:text-mainGreen transition">
+                    <x-heroicon-o-plus class="size-5" />
+                    <span class="font-medium">Add New Shipping Address</span>
+                </button>
+            </div>
+        </x-modal>
+        <x-modal name="add-new-address" title="Add New Address">
+            <div class="p-4 flex flex-col gap-4">
+                <div>
+                    <x-input.text label="Address Name (e.g., Home, Office)" wire:model="shipping_address_name_input" />
+                    @error('shipping_address_name_input') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <x-input.text label="Full Address" wire:model="shipping_address_input" />
+                    @error('shipping_address_input') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="flex justify-end gap-2 mt-4">
+                    <x-button type="outline-neutral" @click="$dispatch('close-modal', 'add-new-address')">Cancel</x-button>
+                    <x-button type="primary" wire:click="updateAddress">Save Address</x-button>
+                </div>
+            </div>
+        </x-modal>
+    </div>

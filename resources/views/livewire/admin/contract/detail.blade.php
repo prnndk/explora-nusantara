@@ -4,7 +4,9 @@
             <x-heroicon-o-arrow-left-circle class="size-8" />
         </a>
         <div class="">
-            <h1 class="text-4xl font-bold">Contract#{{ $contract->id }}</h1>
+            <h1 class="text-4xl font-bold">
+                Contract#{{ $contract->getContractCode() }}
+            </h1>
             <div class="flex flex-row gap-4 mb-6 mt-4">
                 <p class="text-md">Created At
                     {{ \Carbon\Carbon::make($contract->created_at)->monthName . ', ' . \Carbon\Carbon::make($contract->created_at) }}
@@ -92,10 +94,28 @@
                         </p>
                     </div>
                     <div class="flex flex-col gap-2 space-y-2">
-                        <div class="space-y-6 mt-3 mb-8">
-                            <h6 class="my-2">Gambar Produk</h6>
-                            <img src="/view-file/{{ $contract->product->foto_file_id }}" alt="Card Image"
-                                class="max-w-full h-64 object-cover rounded-md shadow-md">
+                        <div class="space-y-2 mt-3 mb-8" x-data="{ 
+        images: [
+            '/view-file/{{ $contract->product->foto_file_id }}', 
+            @foreach($contract->product->images as $img) '{{ asset('storage/' . $img->image_path) }}', @endforeach
+        ],
+        activeIndex: 0 
+    }">
+                            <h6 class="font-semibold text-gray-700">Gambar Produk</h6>
+
+                            <div class="relative w-full aspect-video overflow-hidden rounded-xl border border-gray-100 shadow-sm bg-gray-50">
+                                <img :src="images[activeIndex]"
+                                    class="w-full h-full object-cover transition-all duration-500">
+                            </div>
+
+                            <div class="flex gap-2 mt-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x">
+                                <template x-for="(img, index) in images" :key="index">
+                                    <img :src="img"
+                                        @click="activeIndex = index"
+                                        :class="activeIndex === index ? 'border-mainGreen ring-2 ring-mainGreen/20' : 'border-gray-200'"
+                                        class="w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer border-2 transition-all hover:opacity-80 snap-center">
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,9 +128,9 @@
                         class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200/60 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none">
                         <x-heroicon-o-document class="w-5 h-5 mr-3" />
                         @if ($contract->file_id)
-                            {{ str_replace('uploads/', '', $contract->file->file_path) }}
+                        {{ str_replace('uploads/', '', $contract->file->file_path) }}
                         @else
-                            No Document Available
+                        No Document Available
                         @endif
                         <x-heroicon-c-ellipsis-vertical class="w-5 h-5 ml-3" />
                     </button>
@@ -120,13 +140,14 @@
                         x-transition:enter-end="translate-y-0" class="absolute top-full left-0 mt-2 z-50 w-56"
                         x-cloak>
                         @if ($contract->file_id)
-                            <div
-                                class="p-1 mt-1 text-sm bg-white border rounded-md shadow-md border-neutral-200/70 text-neutral-700">
-                                <a href="/view-file/{{ $contract->file_id }}" @click="dropdownOpen = false"
-                                    class="relative flex justify-between w-full cursor-default select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900 outline-none">
-                                    <span>Open File</span>
-                                </a>
-                            </div>
+                        <div
+                            class="p-1 mt-1 text-sm bg-white border rounded-md shadow-md border-neutral-200/70 text-neutral-700">
+                            <a href="/view-file/{{ $contract->file->id }}" target="_blank"
+                                @click="dropdownOpen = false"
+                                class="relative flex justify-between w-full cursor-pointer select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900">
+                                <span>Open File</span>
+                            </a>
+                        </div>
                         @endif
                     </div>
                 </div>

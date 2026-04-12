@@ -1,18 +1,20 @@
 <div class="flex flex-row gap-2 items-center">
 
     {{-- Cancel Transaction --}}
-    <button x-data="{ showTooltip: false }"
-        @mouseenter="showTooltip = true"
-        @mouseleave="showTooltip = false"
-        x-on:click="$dispatch('open-modal', 'confirm-delete-{{ $id }}')"
-        class="relative flex items-center justify-center p-2 rounded-lg text-red-normal hover:bg-gray-100 transition">
-        <x-heroicon-s-x-circle class="w-6 h-6" />
-        <span x-show="showTooltip"
-              x-transition
-              class="absolute -top-7 left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg whitespace-nowrap">
-            Cancel Transaction
-        </span>
-    </button>
+    @if($row->status !== \App\Enums\TransactionStatus::DONE && $row->status !== \App\Enums\TransactionStatus::CANCELED)
+        <button x-data="{ showTooltip: false }"
+            @mouseenter="showTooltip = true"
+            @mouseleave="showTooltip = false"
+            x-on:click="$dispatch('open-modal', 'confirm-delete-{{ $id }}')"
+            class="relative flex items-center justify-center p-2 rounded-lg text-red-normal hover:bg-gray-100 transition">
+            <x-heroicon-s-x-circle class="w-6 h-6" />
+            <span x-show="showTooltip"
+                  x-transition
+                  class="absolute -top-7 left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg whitespace-nowrap">
+                Cancel Transaction
+            </span>
+        </button>
+    @endif
 
     {{-- Detail Transaction (warna oranye + solid icon) --}}
     <a href="{{ route('buyer.transaction.detail', $id) }}"

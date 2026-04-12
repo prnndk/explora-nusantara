@@ -16,14 +16,24 @@ class Product extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'status'=> ProductStatus::class,
+        'status' => ProductStatus::class,
     ];
 
-    public function seller(): BelongsTo{
+    public function seller(): BelongsTo
+    {
         return $this->belongsTo(Seller::class, 'seller_id');
     }
 
-    public function file(): BelongsTo{
-        return $this->belongsTo(File::class, 'foto_file_id','id');
+    public function file(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'foto_file_id', 'id');
+    }
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 }
