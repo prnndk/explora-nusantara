@@ -1,4 +1,4 @@
-<x-button type="primary" x-on:click="$dispatch('open-modal', 'create')">
+<x-button type="primary" wire:click="openCreateModal">
     <x-heroicon-o-plus class="w-5 h-5" /> Create New Meeting
 </x-button>
 
@@ -26,12 +26,12 @@
                     wire:model="end_time" :required="true" />
                 <x-input.select label="Select Transaction" name="transaction_select" :transparent="false"
                     wire:model="transaction_select" :required="true">
+                    <option value="">-- Pilih Transaksi --</option>
                     @foreach ($transaction as $tx)
-                        <option value="{{ $tx->id }}">
-                            Transaksi
-                            {{ 'Rp ' . number_format($tx->total_harga, 0, ',', '.') . ' - ' . $tx->buyer->name }} -
-                            {{ $tx->product->nama }}
-                        </option>
+                    <option value="{{ $tx->id }}">
+                        Transaksi {{ 'Rp ' . number_format($tx->total_harga, 0, ',', '.') . ' - ' . $tx->buyer->name }} -
+                        {{ $tx->product->nama }}
+                    </option>
                     @endforeach
                 </x-input.select>
 

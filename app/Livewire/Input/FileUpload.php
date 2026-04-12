@@ -33,13 +33,13 @@ class FileUpload extends Component
     {
         $this->temp_upload = $value;
 
-        // Pastikan hanya ambil nama file jika objeknya instance dari UploadedFile
         if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
             $this->originalFileName = $value->getClientOriginalName();
         } else {
-            // Kalau cuma string path (file lama), pakai nama file dari path-nya saja
             $this->originalFileName = basename($value);
         }
+
+        $this->saveFile();
     }
 
     public function saveFile()

@@ -49,32 +49,34 @@
                 <h6 class="font-semibold text-2xl mb-6">Support Files</h6>
                 <div>
                     <span class="block mb-2 text-sm tracking-wide text-gray-500">Contract File</span>
-                    <div x-data="{ dropdownOpen: false }" class="relative">
 
+                    {{-- Cek apakah kontrak ada --}}
+                    @if($contract && $contract->file)
+                    <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click.prevent="dropdownOpen = true"
-                            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200/60 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none">
+                            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-white border rounded-md hover:bg-neutral-100">
                             <x-heroicon-o-document class="w-5 h-5 mr-3" />
                             Contract.pdf
-                            <x-heroicon-c-ellipsis-vertical
-                                class="w-5 h-5 ml-3" />
+                            <x-heroicon-c-ellipsis-vertical class="w-5 h-5 ml-3" />
                         </button>
 
-                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false"
-                            x-transition:enter="ease-out duration-200"
-                            x-transition:enter-start="-translate-y-2"
-                            x-transition:enter-end="translate-y-0"
-                            class="absolute top-full left-0 mt-2 z-50 w-56"
-                            x-cloak>
-                            <div
-                                class="p-1 mt-1 text-sm bg-white border rounded-md shadow-md border-neutral-200/70 text-neutral-700">
+                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-cloak
+                            class="absolute top-full left-0 mt-2 z-50 w-56">
+                            <div class="p-1 mt-1 text-sm bg-white border rounded-md shadow-md border-neutral-200/70 text-neutral-700">
                                 <a href="/view-file/{{ $contract->file->id }}" target="_blank"
-                                    @click="dropdownOpen = false"
-                                    class="relative flex justify-between w-full cursor-pointer select-none group items-center rounded px-2 py-1.5 hover:bg-neutral-100 hover:text-neutral-900">
+                                    class="relative flex justify-between w-full cursor-pointer rounded px-2 py-1.5 hover:bg-neutral-100">
                                     <span>Open File</span>
                                 </a>
                             </div>
                         </div>
                     </div>
+                    @else
+                    {{-- Tampilan kalau kontrak belum ada --}}
+                    <div class="flex items-center gap-2 p-3 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg">
+                        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                        <span>Kontrak belum tersedia untuk transaksi ini.</span>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

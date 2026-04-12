@@ -42,7 +42,8 @@
                     value="{{ $transaction->note_to_seller }}" readonly />
                 <x-input.text label="Total Price" name="total_price" :transparent="false"
                     value="Rp {{ number_format($transaction->total, 0, ',', '.') }}" readonly />
-                @if ($transaction->status == App\Enums\TransactionStatus::DONE)
+                @if ($transaction->status == App\Enums\TransactionStatus::PENDING ||
+                $transaction->status == App\Enums\TransactionStatus::DONE)
                 <livewire:transaction-chat :transaction="$transaction" />
                 @endif
 

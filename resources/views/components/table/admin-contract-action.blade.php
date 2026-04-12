@@ -1,15 +1,21 @@
-<div class="flex flex-row gap-2">
+<div class="flex flex-row justify-center gap-2">
+    @if($status === \App\Enums\ProductStatus::PENDING)
     <button x-on:click="$dispatch('open-modal', 'confirm-action-{{ $id }}')" class="text-mainGreen">
         <x-heroicon-s-check-circle class="size-6" />
     </button>
-    <button x-on:click="$dispatch('open-modal', 'confirm-delete-{{ $id }}')"
-        class="text-red-normal hover:text-red-dark">
-        <x-heroicon-s-x-circle class="size-6 text-red-normal hover:text-red-dark" />
+    @endif
+
+    @if($status === \App\Enums\ProductStatus::PENDING || $status === \App\Enums\ProductStatus::NEW_REQUEST)
+    <button x-on:click="$dispatch('open-modal', 'confirm-delete-{{ $id }}')" class="text-red-normal hover:text-red-dark">
+        <x-heroicon-s-x-circle class="size-6" />
     </button>
+    @endif
     <a href="{{route('admin.contract.detail', $id)}}" wire:navigate class="text-amber-600">
         <x-heroicon-m-information-circle class="size-6" />
     </a>
 </div>
+
+@if($status === \App\Enums\ProductStatus::PENDING || $status === \App\Enums\ProductStatus::NEW_REQUEST)
 <x-warning-modal name="confirm-action-{{$id}}" :show="false" title="Are you sure want to approve this contract?">
     <div class="p-3 grid grid-cols-2 justify-between items-center gap-4">
         <button type="button" x-on:click="$dispatch('close-modal', 'confirm-action-{{$id}}')"
@@ -36,3 +42,4 @@
         </button>
     </div>
 </x-delete-modal>
+@endif

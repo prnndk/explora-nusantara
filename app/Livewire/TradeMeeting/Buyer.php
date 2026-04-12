@@ -53,16 +53,27 @@ class Buyer extends DataTableComponent
                     ])
                 )
                 ->sortable(),
-            Column::make('Actions', 'zoom_id')
+             Column::make('Actions', 'zoom_id')
                 ->format(
                     function ($value, $row, Column $column) {
-                        $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                        $zoom_meeting_url = isset($zoom_meeting_data['data']) && isset($zoom_meeting_data['data']['join_url'])
-                            ? $zoom_meeting_data['data']['join_url']
-                            : '';
+                        $zoom_meeting_url = '';
+                        $isExpired = false;
+
+                        // Cek apakah meeting sudah expired
+                        $meetingEnd = Carbon::parse($row->start_time)->addMinutes((int) $row->duration);
+                        $isExpired = Carbon::now('Asia/Jakarta')->greaterThan($meetingEnd);
+
+                        if ($row->status === ProductStatus::APPROVED && !$isExpired) {
+                            $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                            $zoom_meeting_url = isset($zoom_meeting_data['data']['join_url'])
+                                ? $zoom_meeting_data['data']['join_url']
+                                : '';
+                        }
+
                         return view('components.table.seller-meeting-table-action', [
-                            'zoom_meeting_id' => $row->status === ProductStatus::REJECTED ? '' : $zoom_meeting_url,
+                            'zoom_meeting_id' => $zoom_meeting_url,
                             'status' => $row->status,
+                            'is_expired' => $isExpired,
                         ]);
                     }
                 ),

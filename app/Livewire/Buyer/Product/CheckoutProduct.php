@@ -81,8 +81,8 @@ class CheckoutProduct extends Component
             $transaction->subtotal_shipping = $this->shippingCost;
             $transaction->subtotal_asuransi = 2000;
             $transaction->subtotal_service = 5000;
-            $transaction->total = $this->totalPrice * $this->quantity + $this->shippingCost + 2000 + 5000;
-            $transaction->total_harga = $this->totaled;
+            $transaction->total = $this->totalPrice + $this->shippingCost + 2000 + 5000;
+            $transaction->total_harga = $this->totalPrice + $this->shippingCost + 2000 + 5000;
             $transaction->payment_method = $this->payment_method;
             $transaction->pengiriman = $this->shipping_address;
             $transaction->note_to_seller = $this->note_to_seller;
@@ -145,6 +145,11 @@ class CheckoutProduct extends Component
     public function reloadAlamat()
     {
         $this->user_alamat = Alamat::where('user_id', $this->user->id)->get();
+    }
+
+    public function updatedQuantity($value)
+    {
+        $this->totalPrice = $this->product->harga * (int) $value;
     }
 
     public function render()

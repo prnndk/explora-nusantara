@@ -40,7 +40,8 @@
                     value="{{ $transaction->kuantitas_pembelian }}" readonly />
                 <x-input.text label="Total Price" name="total_price" :transparent="false"
                     value="Rp {{ number_format($transaction->total, 0, ',', '.') }}" readonly />
-                @if ($transaction->status == App\Enums\TransactionStatus::DONE)
+                @if ($transaction->status == App\Enums\TransactionStatus::PENDING ||
+                $transaction->status == App\Enums\TransactionStatus::DONE)
                 <livewire:transaction-chat :transaction="$transaction" />
                 @endif
 
@@ -53,6 +54,14 @@
                         <div class="w-fit">
                             <x-table.transaction-badge :status="$transaction->contract->status" />
                         </div>
+
+                        {{-- Button approve kontrak hanya muncul kalau NEW_REQUEST --}}
+                        @if($transaction->contract->status === \App\Enums\ProductStatus::NEW_REQUEST)
+                        <x-button type="primary" wire:click="approveContract">
+                            Approve Contract
+                        </x-button>
+                        @endif
+
                         <p class="font-semibold">File:</p>
                         <div x-data="{ dropdownOpen: false }" class="relative">
                             <button @click.prevent="dropdownOpen = !dropdownOpen"

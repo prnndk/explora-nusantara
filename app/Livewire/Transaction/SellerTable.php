@@ -41,7 +41,7 @@ class SellerTable extends DataTableComponent
 
             if ($transaction) {
                 $transaction->update([
-                    'status' => TransactionStatus::DONE
+                    'status' => TransactionStatus::PENDING
                 ]);
             }
         } catch (\Exception $exception) {

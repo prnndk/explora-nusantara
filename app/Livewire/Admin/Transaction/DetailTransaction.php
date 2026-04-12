@@ -9,7 +9,7 @@ use App\Models\Contract;
 class DetailTransaction extends Component
 {
     public Transaction $transaction;
-    public Contract $contract;
+    public ?Contract $contract;
 
     public function mount(Transaction $transaction)
     {

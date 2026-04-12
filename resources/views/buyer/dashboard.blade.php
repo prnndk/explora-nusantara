@@ -19,7 +19,7 @@
                     color="secondary" />
                 <x-dashboard-statistic title="Verified Meetings" :heading="$unvalidatedMeeting" :smallNumber="$totalMeeting"
                     icon="heroicon-o-chat-bubble-left-right" color="secondary" />
-                <x-dashboard-statistic title="Expired Transaction" :heading="$expiredTransaction" icon="heroicon-m-lock-closed"
+                <x-dashboard-statistic title="Cancelled Transaction" :heading="$expiredTransaction" icon="heroicon-m-lock-closed"
                     color="primary" />
             </div>
             <div class="mt-8">

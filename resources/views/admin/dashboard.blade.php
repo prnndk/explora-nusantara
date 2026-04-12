@@ -12,14 +12,12 @@
         <div class="flex flex-col h-full w-full col-span-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12"
                 :class="{ 'gap-12': !sidebarOpenStatus, 'gap-8': sidebarOpenStatus }">
-                <x-dashboard-statistic title="Unvalidated Contracts" :heading="$unvalidatedContract"
-                    icon="heroicon-o-globe-asia-australia" color="primary" />
+                <x-dashboard-statistic title="Unvalidated Products" :heading="$unvalidatedProduct" icon="heroicon-c-archive-box" color="primary" />
                 {{-- <x-dashboard-statistic title="Unvalidated transactions" heading="$123.12" icon="heroicon-m-banknotes"
                     color="secondary" /> --}}
                 <x-dashboard-statistic title="Unvalidated Meetings" :heading="$unvalidatedMeeting" :smallNumber="$totalMeeting"
                     icon="heroicon-o-chat-bubble-left-right" color="secondary" />
-                <x-dashboard-statistic title="Unvalidated Products" heading="3" icon="heroicon-c-archive-box"
-                    color="primary" />
+                <x-dashboard-statistic title="Unvalidated Products" :heading="$unvalidatedProduct" icon="heroicon-c-archive-box" color="primary" />
             </div>
             <div class="mt-8">
                 <x-dashboard-chart :chart_data="$transactionChart" />
@@ -34,14 +32,14 @@
                 <h6 class="font-bold text-xl">Notification</h6>
                 <div class="flex flex-col my-4 gap-4">
                     @foreach ($newestMeeting as $meet)
-                        <x-dashboard-notification heading="Zoom Meeting" description="With {{ $meet->buyer->name }}"
-                            icon="heroicon-o-chat-bubble-left-right" color="secondary" :link="route('admin.trade-meeting.index')" />
+                    <x-dashboard-notification heading="Zoom Meeting" description="With {{ $meet->buyer->name }}"
+                        icon="heroicon-o-chat-bubble-left-right" color="secondary" :link="route('admin.trade-meeting.index')" />
                     @endforeach
 
                     @foreach ($newestTransaction as $transaction)
-                        <x-dashboard-notification heading="Product {{ $transaction->status }}"
-                            description="Buyer: {{ $transaction->buyer->name }} Seller: {{ $transaction->seller->name }}"
-                            icon="heroicon-o-archive-box" :link="route('admin.transaction.detail', $transaction->id)" />
+                    <x-dashboard-notification heading="Product {{ $transaction->status }}"
+                        description="Buyer: {{ $transaction->buyer->name }} Seller: {{ $transaction->seller->name }}"
+                        icon="heroicon-o-archive-box" :link="route('admin.transaction.detail', $transaction->id)" />
                     @endforeach
                 </div>
             </div>

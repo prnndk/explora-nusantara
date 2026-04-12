@@ -12,7 +12,7 @@ use Livewire\Component;
 class DetailTransaction extends Component
 {
     public Transaction $transaction;
-    private string $transaction_id;
+    public string $transaction_id = '';
     public $contract_document;
 
     public function mount(Transaction $transaction)
@@ -29,7 +29,6 @@ class DetailTransaction extends Component
         if (!$this->transaction) {
             return $this->dispatch('toast', message: 'Transaksi tidak ditemukan', data: ['position' => 'top-right', 'type' => 'error']);
         }
-
     }
 
     public function uploadContract()
@@ -61,27 +60,48 @@ class DetailTransaction extends Component
     }
 
     public function updateContractDocument()
-{
-    try {
-        $this->validate([
-            'contract_document' => 'required|exists:files,file_path'
-        ]);
+    {
+        try {
+            $this->validate([
+                'contract_document' => 'required|exists:files,file_path'
+            ]);
 
-        app(ContractService::class)->updateContractDocument(
-            $this->transaction,
-            $this->contract_document
-        );
+            app(ContractService::class)->updateContractDocument(
+                $this->transaction,
+                $this->contract_document
+            );
 
-        $this->contract_document = null;
-        $this->dispatch('filepondReset', 'contract_document');
-        $this->dispatch('close-modal', 'update-contract');
+            $this->contract_document = null;
+            $this->dispatch('filepondReset', 'contract_document');
+            $this->dispatch('close-modal', 'update-contract');
 
-        return $this->dispatch('toast', message: 'Berhasil update dokumen contract', data: ['type' => 'success']);
-
-    } catch (\Exception $e) {
-        return $this->dispatch('toast', message: $e->getMessage(), data: ['type' => 'error']);
+            return $this->dispatch('toast', message: 'Berhasil update dokumen contract', data: ['type' => 'success']);
+        } catch (\Exception $e) {
+            return $this->dispatch('toast', message: $e->getMessage(), data: ['type' => 'error']);
+        }
     }
-}
+    public function approveContract()
+    {
+        try {
+            $contract = $this->transaction->contract;
+
+            if (!$contract) {
+                return $this->dispatch('toast', message: 'Kontrak tidak ditemukan', data: ['position' => 'top-right', 'type' => 'error']);
+            }
+
+            if ($contract->status !== \App\Enums\ProductStatus::NEW_REQUEST) {
+                return $this->dispatch('toast', message: 'Kontrak sudah tidak bisa di-approve', data: ['position' => 'top-right', 'type' => 'warning']);
+            }
+
+            $contract->update(['status' => \App\Enums\ProductStatus::PENDING]);
+
+            $this->updateTransactionData();
+
+            return $this->dispatch('toast', message: 'Kontrak berhasil di-approve', data: ['position' => 'top-right', 'type' => 'success']);
+        } catch (Exception $e) {
+            return $this->dispatch('toast', message: 'Gagal approve kontrak: ' . $e->getMessage(), data: ['position' => 'top-right', 'type' => 'error']);
+        }
+    }
 
     public function render()
     {

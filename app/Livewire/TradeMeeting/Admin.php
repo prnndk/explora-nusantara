@@ -92,10 +92,14 @@ class Admin extends DataTableComponent
                             ]);
                         }
 
-                       return view('components.table.admin-meeting-action', [
+                        $meetingEnd = Carbon::parse($row->start_time)->addMinutes((int) $row->duration);
+                        $isExpired = Carbon::now('Asia/Jakarta')->greaterThan($meetingEnd);
+
+                        return view('components.table.admin-meeting-action', [
                             'zoom_meeting_id' => $zoom_meeting_url,
-                            'id' => $value,
+                             'id' => $row->id,
                             'status' => $row->status,
+                            'is_expired' => $isExpired,
                         ]);
                     }
                 ),

@@ -1,7 +1,10 @@
-<!-- <a href="{{$zoom_meeting_id}}" class="bg-violet-100 text-violet-800 text-xs font-semibold px-3 py-1 rounded-full">Join Now</a> -->
+@if($is_expired)
+    <span class="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">
+        Meeting Expired
+    </span>
 
-@if($status === \App\Enums\ProductStatus::APPROVED && $zoom_meeting_id)
-    <a href="{{$zoom_meeting_id}}" target="_blank"
+@elseif($status === \App\Enums\ProductStatus::APPROVED && $zoom_meeting_id)
+    <a href="{{ $zoom_meeting_id }}" target="_blank"
        class="bg-violet-100 text-violet-800 text-xs font-semibold px-3 py-1 rounded-full">
        Join Now
     </a>

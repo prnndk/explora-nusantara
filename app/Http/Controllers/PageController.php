@@ -22,7 +22,7 @@ class PageController extends Controller
         $unvalidatedContract = $contract->where('status', ProductStatus::NEW_REQUEST)->count();
         $unvalidatedMeeting = $meetings->where('status', ProductStatus::NEW_REQUEST)->count();
         $totalMeeting = $meetings->count();
-        $unvalidatedProduct = $product->where('status', ProductStatus::NEW_REQUEST)->count();
+        $unvalidatedProduct = $product->where('status', ProductStatus::APPROVED)->count();
 
         $newestMeeting = $meetings->sortByDesc('created_at')->take(5);
 
@@ -70,8 +70,8 @@ class PageController extends Controller
 
         $unvalidatedContract = $contract->where('status', ProductStatus::APPROVED)->count();
         $unvalidatedMeeting = $meetings->where('status', ProductStatus::APPROVED)->count();
-        $unvalidatedProduct = $product->where('status', ProductStatus::NEW_REQUEST)->count();
-        $ongoingTransaction = $transaction->where('status', TransactionStatus::DONE)->sum('total_harga');
+        $unvalidatedProduct = $product->where('status', ProductStatus::APPROVED)->count();
+        $ongoingTransaction = $transaction->whereIn('status', [TransactionStatus::NEW_REQUEST, TransactionStatus::PENDING])->sum('total_harga');
         $totalMeeting = $meetings->count();
         $totalProduct = $product->count();
 
@@ -121,7 +121,7 @@ class PageController extends Controller
 
         $unvalidatedContract = $contract->where('status', ProductStatus::APPROVED)->count();
         $unvalidatedMeeting = $meetings->where('status', ProductStatus::APPROVED)->count();
-        $ongoingTransaction = $transaction->where('status', TransactionStatus::NEW_REQUEST)->sum('total_harga');
+        $ongoingTransaction = $transaction->whereIn('status', [TransactionStatus::NEW_REQUEST, TransactionStatus::PENDING])->sum('total_harga');
         $expiredTransaction = $transaction->where('status', TransactionStatus::CANCELED)->count();
         $totalMeeting = $meetings->count();
 

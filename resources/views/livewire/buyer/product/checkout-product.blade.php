@@ -234,7 +234,7 @@
                         <div class="flex justify-between items-center font-bold text-base">
                             <span class="text-gray-900">Total Bill</span>
                             <span class="text-ecstasy-500 text-lg"
-                                x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Number(@this.totaled) + Number(@this.totalPrice) + Number(@this.shippingCost))"></span>
+                                x-text="new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Number(@this.totalPrice) + Number(@this.shippingCost) + 20000 + 5000)"></span>
                         </div>
                     </div>
                 </div>

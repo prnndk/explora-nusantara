@@ -43,9 +43,9 @@ class Seller extends DataTableComponent
                 'timezone' => 'Asia/Jakarta',
                 'password' => $this->password,
                 'end_time' => Carbon::parse($this->end_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
-                'settings'=>[
-                    'join_before_host'=> true,
-                    'waiting_room'=> false,
+                'settings' => [
+                    'join_before_host' => true,
+                    'waiting_room' => false,
                 ]
             ]);
 
@@ -89,10 +89,26 @@ class Seller extends DataTableComponent
         $this->setConfigurableArea('toolbar-right-start', [
             'components.table.seller-meeting-action',
             [
-                'transaction' => Transaction::where('seller_id', auth()->user()->seller->id)->where('status', TransactionStatus::DONE)->with(['buyer'])->get(),
+                'transaction' => Transaction::where('seller_id', auth()->user()->seller->id)
+                    ->where('status', TransactionStatus::DONE)
+                    ->with(['buyer'])
+                    ->get(),
             ]
         ]);
     }
+
+    public function openCreateModal()
+{
+    $transactions = Transaction::where('seller_id', auth()->user()->seller->id)
+        ->where('status', TransactionStatus::DONE)
+        ->get();
+    
+    if ($transactions->count() === 1) {
+        $this->transaction_select = $transactions->first()->id;
+    }
+    
+    $this->dispatch('open-modal', 'create');
+}
 
     public function columns(): array
     {
@@ -123,13 +139,24 @@ class Seller extends DataTableComponent
             Column::make('Actions', 'zoom_id')
                 ->format(
                     function ($value, $row, Column $column) {
-                        $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                        $zoom_meeting_url = isset($zoom_meeting_data['data']) && isset($zoom_meeting_data['data']['join_url'])
-                            ? $zoom_meeting_data['data']['join_url']
-                            : '';
+                        $zoom_meeting_url = '';
+                        $isExpired = false;
+
+                        // Cek apakah meeting sudah expired
+                        $meetingEnd = Carbon::parse($row->start_time)->addMinutes((int) $row->duration);
+                        $isExpired = Carbon::now('Asia/Jakarta')->greaterThan($meetingEnd);
+
+                        if ($row->status === ProductStatus::APPROVED && !$isExpired) {
+                            $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                            $zoom_meeting_url = isset($zoom_meeting_data['data']['join_url'])
+                                ? $zoom_meeting_data['data']['join_url']
+                                : '';
+                        }
+
                         return view('components.table.seller-meeting-table-action', [
-                            'zoom_meeting_id' => $row->status === ProductStatus::APPROVED ? $zoom_meeting_url : '',
-                             'status' => $row->status,
+                            'zoom_meeting_id' => $zoom_meeting_url,
+                            'status' => $row->status,
+                            'is_expired' => $isExpired,
                         ]);
                     }
                 ),

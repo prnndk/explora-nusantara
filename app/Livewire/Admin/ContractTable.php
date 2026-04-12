@@ -22,13 +22,17 @@ class ContractTable extends DataTableComponent
     public function approveContract($id)
     {
         $contract = Contract::where('id', $id)->firstOrFail();
-        $contract->update([
-            'status' => ProductStatus::APPROVED
-        ]);
+
+        if ($contract->status !== ProductStatus::PENDING) {
+            $this->dispatch('toast', message: 'Kontrak hanya bisa di-approve jika sudah di-review oleh Buyer', data: ['position' => 'top-center', 'type' => 'warning']);
+            return;
+        }
+
+        $contract->update(['status' => ProductStatus::APPROVED]);
         $this->dispatch('toast', message: 'Berhasil mengupdate status', data: ['position' => 'top-center', 'type' => 'success']);
         $this->dispatch('refreshDataTable');
     }
-
+    
     public function cancelContract($id)
     {
         $contract = Contract::where('id', $id)->firstOrFail();
@@ -52,7 +56,7 @@ class ContractTable extends DataTableComponent
                 })
                 ->searchable()
                 ->sortable(),
-                
+
             Column::make('Product', 'product.nama')
                 ->format(fn($value, $row, Column $column) => Str::limit($value, 50, '...'))
                 ->searchable()
@@ -66,7 +70,7 @@ class ContractTable extends DataTableComponent
                 ->sortable(),
 
             Column::make('Actions', 'id')
-                ->format(fn($value, $row, Column $column) => view('components.table.admin-contract-action', ['id' => $value])),
+                ->format(fn($value, $row, Column $column) => view('components.table.admin-contract-action', ['id' => $value, 'status' => $row->status])),
         ];
     }
     public function builder(): \Illuminate\Database\Eloquent\Builder

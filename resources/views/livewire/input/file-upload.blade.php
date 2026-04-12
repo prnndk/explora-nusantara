@@ -13,39 +13,34 @@
                 }
             ">
             @if (!$file && !$temp_upload)
-                <div class="flex flex-col items-center">
-                    <x-heroicon-o-document-arrow-up class="h-10 w-10" />
-                    <p class="{{ $transparent ? 'text-neutral-300' : 'text-neutral-700' }} mt-2">Letakkan file disini!
-                    </p>
-                </div>
+            <div class="flex flex-col items-center">
+                <x-heroicon-o-document-arrow-up class="h-10 w-10" />
+                <p class="{{ $transparent ? 'text-neutral-300' : 'text-neutral-700' }} mt-2">Letakkan file disini!
+                </p>
+            </div>
 
-                <!-- Button to trigger file selection -->
-                <x-button type="button" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()"
-                    wire:target.prevent="file">
-                    <x-heroicon-o-plus class="w-5 h-5 mx-2" /> Tambahkan File
-                </x-button>
+            <!-- Button to trigger file selection -->
+            <x-button type="button" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()"
+                wire:target.prevent="file">
+                <x-heroicon-o-plus class="w-5 h-5 mx-2" /> Tambahkan File
+            </x-button>
             @else
-                <div class="flex flex-col items-center mb-2">
-                    <x-heroicon-o-document-text class="h-10 w-10" />
-                    <p class="{{ $transparent ? 'text-neutral-100' : 'text-neutral-700' }} mt-2">
-                        {{ $originalFileName }}</p>
+            <div class="flex flex-col items-center mb-2">
+                <x-heroicon-o-document-text class="h-10 w-10" />
+                <p class="{{ $transparent ? 'text-neutral-100' : 'text-neutral-700' }} mt-2">
+                    {{ $originalFileName }}
+                </p>
+            </div>
+            <div class="relative">
+                <div class="flex flex-row gap-1">
+                    <x-button type="warning" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
+                        <x-heroicon-o-pencil class="w-5 h-5 mx-2" />
+                    </x-button>
+                    <x-button type="danger" addClasses="mt-4" wire:click.prevent="remove" wire:target="remove">
+                        <x-heroicon-o-trash class="w-5 h-5 mx-2" />
+                    </x-button>
                 </div>
-                <div class="relative">
-                    <div class="flex flex-row gap-1">
-                        @if (!$hasUploaded)
-                            <x-button type="primary" addClasses="mt-4" wire:click.prevent="saveFile"
-                                wire:target="saveFile">
-                                <x-heroicon-o-cloud-arrow-up class="w-5 h-5 mx-2" />
-                            </x-button>
-                            <x-button type="warning" addClasses="mt-4" x-on:click.prevent="$refs.fileInput.click()">
-                                <x-heroicon-o-pencil class="w-5 h-5 mx-2" />
-                            </x-button>
-                        @endif
-                        <x-button type="danger" addClasses="mt-4" wire:click.prevent="remove" wire:target="remove">
-                            <x-heroicon-o-trash class="w-5 h-5 mx-2" />
-                        </x-button>
-                    </div>
-                </div>
+            </div>
             @endif
         </label>
 
@@ -63,7 +58,7 @@
             menyimpan gambar klik pada ikon upload</p>
 
         @error('file')
-            <p class="text-gray-300 mt-2 text-sm">{{ $message }}</p>
+        <p class="text-red-500 mt-2 text-sm font-medium">{{ $message }}</p>
         @enderror
     </div>
 </div>
