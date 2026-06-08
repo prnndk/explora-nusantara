@@ -24,7 +24,6 @@ class Buyer extends DataTableComponent
     {
         return TradeMeeting::query()
             ->where('buyer_id', auth()->user()->buyer->id)
-            ->whereIn('status', [ProductStatus::APPROVED, ProductStatus::REJECTED])
             ->orderBy('created_at', 'desc');
     }
 
