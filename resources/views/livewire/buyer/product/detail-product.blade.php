@@ -74,10 +74,6 @@
                 </div>
 
                 <div class="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100 space-y-3">
-                    <div class="flex justify-between text-sm p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <span class="text-gray-600">Minimum Order</span>
-                        <span class="font-bold text-gray-900">12 Unit</span>
-                    </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Stock Available</span>
                         <span class="font-semibold text-gray-900">{{ $product->stok }} Units</span>

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -31,6 +32,8 @@ class CheckoutProduct extends Component
         'premium' => 100000,
     ];
 
+    public $shippingMethod = 'economic';
+
     public $shippingCost;
 
     public function rules()
@@ -54,7 +57,6 @@ class CheckoutProduct extends Component
         $this->product = $product;
         $this->user = Auth::user();
         $this->reloadAlamat();
-        $this->quantity = 12;
         $this->totalPrice = $this->product->harga * $this->quantity;
         $this->shippingCost = $this->ongkir['economic'];
         $this->totaled = $this->shippingCost + 5000 + 20000;
@@ -79,10 +81,10 @@ class CheckoutProduct extends Component
             $transaction->kuantitas_pembelian = $this->quantity;
             $transaction->subtotal_produk = $this->product->harga * $this->quantity;
             $transaction->subtotal_shipping = $this->shippingCost;
-            $transaction->subtotal_asuransi = 2000;
+            $transaction->subtotal_asuransi = 20000;
             $transaction->subtotal_service = 5000;
-            $transaction->total = $this->totalPrice + $this->shippingCost + 2000 + 5000;
-            $transaction->total_harga = $this->totalPrice + $this->shippingCost + 2000 + 5000;
+            $transaction->total = $this->totalPrice + $this->shippingCost + 20000 + 5000;
+            $transaction->total_harga = $this->totalPrice + $this->shippingCost + 20000 + 5000;
             $transaction->payment_method = $this->payment_method;
             $transaction->pengiriman = $this->shipping_address;
             $transaction->note_to_seller = $this->note_to_seller;
@@ -117,8 +119,13 @@ class CheckoutProduct extends Component
     public function updateAddress()
     {
         $this->validate([
-            'shipping_address_input' => 'required|string|max:255|unique:alamats,nama',
-            'shipping_address_name_input' => 'required|string|max:255',
+            'shipping_address_name_input' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('alamats', 'nama')->where('user_id', $this->user->id),
+            ],
+            'shipping_address_input' => 'required|string|max:255',
         ]);
 
         $alamat = new Alamat();

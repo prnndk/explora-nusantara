@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\TradeMeeting;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TradeMeetingPolicy
 {
@@ -13,7 +12,7 @@ class TradeMeetingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isAdmin() || $user->isSeller() || $user->isBuyer();
     }
 
     /**
@@ -21,6 +20,18 @@ class TradeMeetingPolicy
      */
     public function view(User $user, TradeMeeting $tradeMeeting): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        if ($user->isSeller()) {
+            return $user->seller && $tradeMeeting->seller_id === $user->seller->id;
+        }
+
+        if ($user->isBuyer()) {
+            return $user->buyer && $tradeMeeting->buyer_id === $user->buyer->id;
+        }
+
         return false;
     }
 
@@ -29,15 +40,17 @@ class TradeMeetingPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isSeller();
     }
 
     /**
      * Determine whether the user can update the model.
+     *
+     * Only admins approve/reject trade meetings (see App\Livewire\TradeMeeting\Admin).
      */
     public function update(User $user, TradeMeeting $tradeMeeting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -45,7 +58,7 @@ class TradeMeetingPolicy
      */
     public function delete(User $user, TradeMeeting $tradeMeeting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +66,7 @@ class TradeMeetingPolicy
      */
     public function restore(User $user, TradeMeeting $tradeMeeting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -61,6 +74,6 @@ class TradeMeetingPolicy
      */
     public function forceDelete(User $user, TradeMeeting $tradeMeeting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 }

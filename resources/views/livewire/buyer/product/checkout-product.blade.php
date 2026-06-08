@@ -61,19 +61,19 @@
                         </div>
 
                         <div class="flex flex-col items-center gap-2"
-                            x-data="{ quantity: @entangle('quantity'), minOrder: 12, harga: {{ $product->harga }} }">
+                            x-data="{ quantity: @entangle('quantity'), harga: {{ $product->harga }} }">
                             <div class="flex justify-center">
                                 <div class="flex items-center gap-1 bg-white border border-gray-300 rounded-lg p-1">
                                     <button type="button"
-                                        @click="if(quantity > minOrder) { quantity--; $wire.set('quantity', quantity); }"
+                                        @click="if(quantity > 1) { quantity--; $wire.set('quantity', quantity); }"
                                         class="p-1 text-gray-500 hover:text-red-600 transition disabled:opacity-50"
-                                        :disabled="quantity <= minOrder">
+                                        :disabled="quantity <= 1">
                                         <x-heroicon-o-minus class="w-5 h-5" />
                                     </button>
 
                                     <input type="number"
                                         x-model.number="quantity"
-                                        @blur="if(quantity < minOrder) quantity = minOrder; $wire.set('quantity', quantity)"
+                                        @blur="if(quantity < 1) quantity = 1; $wire.set('quantity', quantity)"
                                         class="w-12 text-center border-none focus:ring-0 p-0 text-sm font-semibold" />
 
                                     <button type="button"

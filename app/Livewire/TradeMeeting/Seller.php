@@ -24,7 +24,15 @@ class Seller extends DataTableComponent
             'agenda' => 'required',
             'duration' => 'required|numeric|min:30',
             'password' => 'required',
-            'start_time' => 'required|date',
+            'start_time' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value, 'Asia/Jakarta')->isPast()) {
+                        $fail('Waktu mulai harus di masa depan.');
+                    }
+                },
+            ],
             'end_time' => 'required|date',
             'transaction_select' => 'required|exists:transactions,id',
         ]);
@@ -38,11 +46,11 @@ class Seller extends DataTableComponent
             $response = \Jubaer\Zoom\Facades\Zoom::createMeeting([
                 'topic' => $this->agenda,
                 'type' => 2,
-                'start_time' => Carbon::parse($this->start_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
+                'start_time' => Carbon::parse($this->start_time, 'Asia/Jakarta')->toIso8601String(),
                 'duration' => $this->duration,
                 'timezone' => 'Asia/Jakarta',
                 'password' => $this->password,
-                'end_time' => Carbon::parse($this->end_time)->setTimezone('Asia/Jakarta')->toIso8601String(),
+                'end_time' => Carbon::parse($this->end_time, 'Asia/Jakarta')->toIso8601String(),
                 'settings' => [
                     'join_before_host' => true,
                     'waiting_room' => false,
@@ -123,7 +131,7 @@ class Seller extends DataTableComponent
             Column::make('Start Time', 'start_time')
                 ->sortable()
                 ->format(function ($value) {
-                    return Carbon::parse($value)->locale('id')->translatedFormat('l, d F Y H:i');
+                    return Carbon::parse($value, 'UTC')->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y H:i') . ' WIB';
                 }),
             Column::make('Duration', 'duration')
                 ->format(function ($value) {
@@ -147,10 +155,16 @@ class Seller extends DataTableComponent
                         $isExpired = Carbon::now('Asia/Jakarta')->greaterThan($meetingEnd);
 
                         if ($row->status === ProductStatus::APPROVED && !$isExpired) {
-                            $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                            $zoom_meeting_url = isset($zoom_meeting_data['data']['join_url'])
-                                ? $zoom_meeting_data['data']['join_url']
-                                : '';
+                            try {
+                                $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                                $zoom_meeting_url = $zoom_meeting_data['data']['join_url'] ?? '';
+                            } catch (\Throwable $e) {
+                                Log::error('Failed to fetch Zoom meeting.', [
+                                    'zoom_id' => $row->zoom_id,
+                                    'exception' => get_class($e),
+                                    'message' => $e->getMessage(),
+                                ]);
+                            }
                         }
 
                         return view('components.table.seller-meeting-table-action', [

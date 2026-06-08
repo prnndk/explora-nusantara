@@ -20,7 +20,7 @@ class Admin extends DataTableComponent
 
     public function approveMeeting($id)
     {
-        $meeting = TradeMeeting::where('zoom_id', $id)->firstOrFail();
+        $meeting = TradeMeeting::findOrFail($id);
 
         $meeting->status = ProductStatus::APPROVED;
 
@@ -33,7 +33,7 @@ class Admin extends DataTableComponent
 
     public function cancelMeeting($id)
     {
-        $meeting = TradeMeeting::where('zoom_id', $id)->firstOrFail();
+        $meeting = TradeMeeting::findOrFail($id);
 
         $meeting->status = ProductStatus::REJECTED;
 
@@ -56,7 +56,7 @@ class Admin extends DataTableComponent
             Column::make('Start Time', 'start_time')
                 ->sortable()
                 ->format(function ($value) {
-                    return Carbon::parse($value)->locale('id')->translatedFormat('l, d F Y H:i');
+                    return Carbon::parse($value, 'UTC')->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y H:i') . ' WIB';
                 }),
             Column::make('Duration', 'duration')
                 ->format(function ($value) {

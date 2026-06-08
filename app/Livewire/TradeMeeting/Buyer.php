@@ -5,6 +5,7 @@ namespace App\Livewire\TradeMeeting;
 use App\Enums\ProductStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\TradeMeeting;
@@ -40,7 +41,7 @@ class Buyer extends DataTableComponent
             Column::make('Start Time', 'start_time')
                 ->sortable()
                 ->format(function ($value) {
-                    return Carbon::parse($value)->locale('id')->translatedFormat('l, d F Y H:i');
+                    return Carbon::parse($value, 'UTC')->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y H:i') . ' WIB';
                 }),
             Column::make('Duration', 'duration')
                 ->format(function ($value) {
@@ -64,10 +65,16 @@ class Buyer extends DataTableComponent
                         $isExpired = Carbon::now('Asia/Jakarta')->greaterThan($meetingEnd);
 
                         if ($row->status === ProductStatus::APPROVED && !$isExpired) {
-                            $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
-                            $zoom_meeting_url = isset($zoom_meeting_data['data']['join_url'])
-                                ? $zoom_meeting_data['data']['join_url']
-                                : '';
+                            try {
+                                $zoom_meeting_data = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                                $zoom_meeting_url = $zoom_meeting_data['data']['join_url'] ?? '';
+                            } catch (\Throwable $e) {
+                                Log::error('Failed to fetch Zoom meeting.', [
+                                    'zoom_id' => $row->zoom_id,
+                                    'exception' => get_class($e),
+                                    'message' => $e->getMessage(),
+                                ]);
+                            }
                         }
 
                         return view('components.table.seller-meeting-table-action', [
