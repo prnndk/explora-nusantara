@@ -20,7 +20,14 @@ class Admin extends DataTableComponent
 
     public function approveMeeting($id)
     {
-        $meeting = TradeMeeting::findOrFail($id);
+        $meeting = TradeMeeting::find($id);
+
+        if (!$meeting) {
+            $this->dispatch('refreshDataTable');
+            $this->dispatch('close-modal', 'confirm-action-' . $id);
+            $this->dispatch('toast', message: 'Meeting tidak ditemukan, silakan muat ulang halaman.', data: ['position' => 'top-right', 'type' => 'danger']);
+            return;
+        }
 
         $meeting->status = ProductStatus::APPROVED;
 
@@ -33,14 +40,21 @@ class Admin extends DataTableComponent
 
     public function cancelMeeting($id)
     {
-        $meeting = TradeMeeting::findOrFail($id);
+        $meeting = TradeMeeting::find($id);
+
+        if (!$meeting) {
+            $this->dispatch('refreshDataTable');
+            $this->dispatch('close-modal', 'confirm-delete-' . $id);
+            $this->dispatch('toast', message: 'Meeting tidak ditemukan, silakan muat ulang halaman.', data: ['position' => 'top-right', 'type' => 'danger']);
+            return;
+        }
 
         $meeting->status = ProductStatus::REJECTED;
 
         $meeting->save();
 
         $this->dispatch('refreshDataTable');
-        $this->dispatch('close-modal', 'confirm-action-' . $id);
+        $this->dispatch('close-modal', 'confirm-delete-' . $id);
         $this->dispatch('toast', message: 'Berhasil merubah status', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
