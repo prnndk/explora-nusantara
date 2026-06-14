@@ -5,6 +5,7 @@ namespace App\Livewire\TradeMeeting;
 use App\Enums\ProductStatus;
 use App\Models\TradeMeeting;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
@@ -20,7 +21,7 @@ class Admin extends DataTableComponent
 
     public function approveMeeting($id)
     {
-        $meeting = TradeMeeting::find($id);
+        $meeting = Str::isUuid($id) ? TradeMeeting::find($id) : null;
 
         if (!$meeting) {
             $this->dispatch('refreshDataTable');
@@ -40,7 +41,7 @@ class Admin extends DataTableComponent
 
     public function cancelMeeting($id)
     {
-        $meeting = TradeMeeting::find($id);
+        $meeting = Str::isUuid($id) ? TradeMeeting::find($id) : null;
 
         if (!$meeting) {
             $this->dispatch('refreshDataTable');
