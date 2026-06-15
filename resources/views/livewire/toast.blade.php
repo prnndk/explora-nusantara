@@ -12,12 +12,7 @@
             }
             toast(this.title, { description: this.description, type: this.type, position: this.position, html: html })
         }
-    }" x-init="window.addEventListener('toast', function(event) {
-        console.log(event);
-        event.stopPropagation();
-        toast(event.detail.message, event.detail.data);
-    })
-    window.toast = function(message, options = {}) {
+    }" @toast.window="window.toast($event.detail.message, $event.detail.data)" x-init="window.toast = function(message, options = {}) {
         let description = '';
         let type = 'default';
         let position = 'top-center';
