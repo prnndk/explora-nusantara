@@ -5,7 +5,10 @@ namespace App\Livewire\TradeMeeting;
 use App\Enums\ProductStatus;
 use App\Models\TradeMeeting;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Jubaer\Zoom\Facades\Zoom;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
@@ -19,14 +22,23 @@ class Admin extends DataTableComponent
         $this->setPrimaryKey('id');
     }
 
+    public function builder(): Builder
+    {
+        // Select all base columns so the primary key (id) is hydrated on each row.
+        // Without this, the table only selects the declared columns, leaving $row->id
+        // empty — which makes approveMeeting/cancelMeeting receive an empty id.
+        return TradeMeeting::query()->select('trade_meetings.*');
+    }
+
     public function approveMeeting($id)
     {
         $meeting = Str::isUuid($id) ? TradeMeeting::find($id) : null;
 
-        if (!$meeting) {
+        if (! $meeting) {
             $this->dispatch('refreshDataTable');
-            $this->dispatch('close-modal', 'confirm-action-' . $id);
+            $this->dispatch('close-modal', 'confirm-action-'.$id);
             $this->dispatch('toast', message: 'Meeting tidak ditemukan, silakan muat ulang halaman.', data: ['position' => 'top-right', 'type' => 'danger']);
+
             return;
         }
 
@@ -35,7 +47,7 @@ class Admin extends DataTableComponent
         $meeting->save();
 
         $this->dispatch('refreshDataTable');
-        $this->dispatch('close-modal', 'confirm-action-' . $id);
+        $this->dispatch('close-modal', 'confirm-action-'.$id);
         $this->dispatch('toast', message: 'Berhasil merubah status', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
@@ -43,10 +55,11 @@ class Admin extends DataTableComponent
     {
         $meeting = Str::isUuid($id) ? TradeMeeting::find($id) : null;
 
-        if (!$meeting) {
+        if (! $meeting) {
             $this->dispatch('refreshDataTable');
-            $this->dispatch('close-modal', 'confirm-delete-' . $id);
+            $this->dispatch('close-modal', 'confirm-delete-'.$id);
             $this->dispatch('toast', message: 'Meeting tidak ditemukan, silakan muat ulang halaman.', data: ['position' => 'top-right', 'type' => 'danger']);
+
             return;
         }
 
@@ -55,7 +68,7 @@ class Admin extends DataTableComponent
         $meeting->save();
 
         $this->dispatch('refreshDataTable');
-        $this->dispatch('close-modal', 'confirm-delete-' . $id);
+        $this->dispatch('close-modal', 'confirm-delete-'.$id);
         $this->dispatch('toast', message: 'Berhasil merubah status', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
@@ -71,15 +84,15 @@ class Admin extends DataTableComponent
             Column::make('Start Time', 'start_time')
                 ->sortable()
                 ->format(function ($value) {
-                    return Carbon::parse($value, 'UTC')->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y H:i') . ' WIB';
+                    return Carbon::parse($value, 'UTC')->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y H:i').' WIB';
                 }),
             Column::make('Duration', 'duration')
                 ->format(function ($value) {
-                    return $value . ' menit';
+                    return $value.' menit';
                 }),
             Column::make('Status', 'status')
                 ->format(
-                    fn($value, $row, Column $column) => view('components.table.product-table-badge', [
+                    fn ($value, $row, Column $column) => view('components.table.product-table-badge', [
                         'status' => $value,
                     ])
                 )
@@ -90,7 +103,7 @@ class Admin extends DataTableComponent
                         $zoom_meeting_url = '';
 
                         try {
-                            $response = \Jubaer\Zoom\Facades\Zoom::getMeeting($row->zoom_id);
+                            $response = Zoom::getMeeting($row->zoom_id);
 
                             if (is_array($response)) {
                                 $data = $response['data'] ?? $response;
@@ -100,7 +113,7 @@ class Admin extends DataTableComponent
                                 $zoom_meeting_url = $data->start_url ?? $data->join_url ?? '';
                             }
                         } catch (\Throwable $e) {
-                            \Illuminate\Support\Facades\Log::error('Failed to fetch Zoom meeting.', [
+                            Log::error('Failed to fetch Zoom meeting.', [
                                 'zoom_id' => $row->zoom_id,
                                 'exception' => get_class($e),
                                 'message' => $e->getMessage(),
@@ -112,7 +125,7 @@ class Admin extends DataTableComponent
 
                         return view('components.table.admin-meeting-action', [
                             'zoom_meeting_id' => $zoom_meeting_url,
-                             'id' => $row->id,
+                            'id' => $row->id,
                             'status' => $row->status,
                             'is_expired' => $isExpired,
                         ]);
