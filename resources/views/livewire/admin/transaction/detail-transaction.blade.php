@@ -10,7 +10,7 @@
                 <div class="flex flex-col space-y-1" x-data="{ 
     images: [
         '/view-file/{{ $transaction->product->foto_file_id }}', 
-        @foreach($transaction->product->images as $img) '{{ asset('storage/' . $img->image_path) }}', @endforeach
+        @foreach($transaction->product->images as $img) '{{ route('product-image', $img->id) }}', @endforeach
     ],
     activeIndex: 0 
 }">

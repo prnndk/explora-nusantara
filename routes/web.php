@@ -177,4 +177,13 @@ Route::middleware(['auth', 'verify-registration'])->group(function () {
 
         return response()->file($filePath);
     })->name('view-file');
+
+    Route::get('product-image/{productImage:id}', function (\App\Models\ProductImage $productImage) {
+        $filePath = storage_path('app/public/' . $productImage->image_path);
+        if (!file_exists($filePath)) {
+            abort(404);
+        }
+
+        return response()->file($filePath);
+    })->name('product-image');
 });

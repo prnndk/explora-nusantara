@@ -97,7 +97,7 @@
                         <div class="space-y-2 mt-3 mb-8" x-data="{ 
         images: [
             '/view-file/{{ $contract->product->foto_file_id }}', 
-            @foreach($contract->product->images as $img) '{{ asset('storage/' . $img->image_path) }}', @endforeach
+            @foreach($contract->product->images as $img) '{{ route('product-image', $img->id) }}', @endforeach
         ],
         activeIndex: 0 
     }">

@@ -16,7 +16,7 @@
             <div class="col-span-5" x-data="{ 
     images: [
         // Gallery dimasukin duluan
-        @foreach($product->images as $img) '{{ asset('storage/' . $img->image_path) }}', @endforeach
+        @foreach($product->images as $img) '{{ route('product-image', $img->id) }}', @endforeach
         // Cover ditaruh terakhir di array
         '/view-file/{{ $product->file->id }}', 
     ],

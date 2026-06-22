@@ -1,9 +1,6 @@
 <div>
     <form wire:submit.prevent="handleUpdate">
         <div class="flex row gap-6 my-6">
-            <!-- <x-button type="danger" class="py-3 px-8 rounded-lg" button="button"
-                x-on:click="$dispatch('open-modal', 'confirm-delete')">Delete
-            </x-button> -->
             <a href="{{ route('seller.product.index') }}" wire:navigate>
                 <x-button type="danger" class="py-3 px-8 rounded-lg" button="button">
                     Cancel
@@ -40,15 +37,6 @@
                     <div x-show="open" class="mt-3">
                         <livewire:input.file-upload name="foto_file_id" label="Upload Gambar" user_id="{{ auth()->user()->id }}"
                             wire:model="foto_file_id" :required="!$product->file" :transparent="false" />
-                        
-                        <!-- @if ($foto_file_id)
-                        <div class="mt-2">
-                            <p class="text-xs text-green-600">Preview Cover Baru</p>
-
-                            <img src="{{ asset($foto_file_id) }}"
-                                class="w-full h-40 object-cover rounded-lg border">
-                        </div>
-                        @endif -->
                     </div>
                 </div>
                 <div class="space-y-3 mt-3 mb-8">
@@ -64,7 +52,7 @@
                         @foreach ($product->images as $img)
                         <div class="relative group">
 
-                            <img src="{{ asset('storage/' . $img->image_path) }}"
+                            <img src="{{ route('product-image', $img->id) }}"
                                 class="w-full h-24 object-cover rounded-lg border">
 
                             <!-- Delete button -->

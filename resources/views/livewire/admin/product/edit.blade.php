@@ -41,7 +41,7 @@
                 @if ($product->images && $product->images->count())
                 <div class="grid grid-cols-3 gap-3 mt-4">
                     @foreach ($product->images as $img)
-                    <img src="{{ asset('storage/' . $img->image_path) }}"
+                    <img src="{{ route('product-image', $img->id) }}"
                         class="w-full h-24 object-cover rounded-lg border">
                     @endforeach
                 </div>
