@@ -12,13 +12,13 @@ describe("Seller Trade Meetings Tests", () => {
 
     // Input fields
     cy.get("input[name='agenda']").type("Negosiasi Kontrak Kopi Sumatra");
-    cy.get("input[name='duration']").type("60");
-    cy.get("input[name='password']").type("ZoomPass123");
+    cy.get("input[name='duration']").type("30");
+    cy.get("input[name='password']").type("ZoomP123");
 
     // Calculate dates in future
     const now = new Date();
     const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 1 day future
-    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // +1 hour
+    const endTime = new Date(startTime.getTime() + 30 * 60 * 1000); // +30 minutes (matching duration)
 
     // Format: YYYY-MM-DDThh:mm
     const formatDateTime = (date) => {
