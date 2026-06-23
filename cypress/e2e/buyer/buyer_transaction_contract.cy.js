@@ -26,6 +26,21 @@ describe("Buyer Transaction Contract Approval Flow", () => {
     cy.get("h6").should("contain.text", "Seller Detail");
     cy.get("h6").should("contain.text", "Transaction Detail");
 
+    // Check contract section - upload contract if button exists (B20)
+    cy.get("body").then(($body) => {
+      const hasUploadButton = $body.find("button:contains('Upload Contract')").length > 0;
+      
+      if (hasUploadButton) {
+        const fileName = "test_contract.pdf";
+        cy.contains("h6", "Contract").next("div").within(() => {
+          cy.get("input[name='contract_document']").selectFile("cypress/fixtures/" + fileName, { force: true });
+          cy.contains(fileName).should("be.visible");
+          cy.contains("button", "Upload Contract").click({ force: true });
+        });
+        cy.contains("Berhasil").should("be.visible");
+      }
+    });
+
     // Approve the contract draft
     cy.get("body").then(($body) => {
       if ($body.text().includes("Approve Contract")) {
