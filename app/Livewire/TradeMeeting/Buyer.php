@@ -3,9 +3,12 @@
 namespace App\Livewire\TradeMeeting;
 
 use App\Enums\ProductStatus;
+use App\Enums\TransactionStatus;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\TradeMeeting;
@@ -13,11 +16,100 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\IncrementColumn;
 
 class Buyer extends DataTableComponent
 {
+    public $agenda, $duration, $password, $start_time, $end_time, $transaction_select;
     protected $model = TradeMeeting::class;
 
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+        $this->setConfigurableArea('toolbar-right-start', [
+            'components.table.buyer-meeting-action',
+            [
+                'transaction' => Transaction::where('buyer_id', auth()->user()->buyer->id)
+                    ->where('status', TransactionStatus::DONE)
+                    ->with(['seller'])
+                    ->get(),
+            ]
+        ]);
+    }
+
+    public function openCreateModal()
+    {
+        $transactions = Transaction::where('buyer_id', auth()->user()->buyer->id)
+            ->where('status', TransactionStatus::DONE)
+            ->get();
+        
+        if ($transactions->count() === 1) {
+            $this->transaction_select = $transactions->first()->id;
+        }
+        
+        $this->dispatch('open-modal', 'create');
+    }
+
+    public function handleCreation()
+    {
+        $this->validate([
+            'agenda' => 'required',
+            'duration' => 'required|numeric|min:30',
+            'password' => 'required',
+            'start_time' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value, 'Asia/Jakarta')->isPast()) {
+                        $fail('Waktu mulai harus di masa depan.');
+                    }
+                },
+            ],
+            'end_time' => 'required|date',
+            'transaction_select' => 'required|exists:transactions,id',
+        ]);
+
+        if (Carbon::parse($this->end_time)->lessThanOrEqualTo(Carbon::parse($this->start_time))) {
+            $this->addError('end_time', 'Waktu selesai harus lebih besar dari waktu mulai.');
+            return;
+        }
+
+        try {
+            $response = \Jubaer\Zoom\Facades\Zoom::createMeeting([
+                'topic' => $this->agenda,
+                'type' => 2,
+                'start_time' => Carbon::parse($this->start_time, 'Asia/Jakarta')->toIso8601String(),
+                'duration' => $this->duration,
+                'timezone' => 'Asia/Jakarta',
+                'password' => $this->password,
+                'end_time' => Carbon::parse($this->end_time, 'Asia/Jakarta')->toIso8601String(),
+                'settings' => [
+                    'join_before_host' => true,
+                    'waiting_room' => false,
+                ]
+            ]);
+
+            if (!isset($response['data']) || !is_array($response['data'])) {
+                Log::error($response);
+                throw new \RuntimeException('Invalid response from Zoom API.');
+            }
+
+            $zoom = $response['data'];
+        } catch (\Throwable $e) {
+            Log::error('Zoom meeting creation failed', ['message' => $e->getMessage()]);
+            $this->addError('zoom', 'Gagal membuat meeting Zoom. Silakan coba lagi nanti.');
+            return $this->dispatch('toast', message: 'Gagal Membuat Meeting', data: ['position' => 'top-right', 'type' => 'danger']);
+        }
+
+        TradeMeeting::create([
+            'zoom_id' => $zoom['id'],
+            'buyer_id' => auth()->user()->buyer->id,
+            'seller_id' => Transaction::find($this->transaction_select)->seller->id,
+            'password' => $this->password,
+            'topic' => $this->agenda,
+            'start_time' => Carbon::parse($zoom['start_time'])->format('Y-m-d H:i:s'),
+            'duration' => $zoom['duration'],
+        ]);
+
+        $this->dispatch('close-modal', 'create');
+        $this->dispatch('refreshDataTable');
+        return $this->dispatch('toast', message: 'Berhasil Membuat Meeting', data: ['position' => 'top-right', 'type' => 'success']);
     }
 
     public function builder(): Builder
